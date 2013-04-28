@@ -112,7 +112,7 @@ public class EventListener implements Listener{
             for(Completion com : ach.getCompletions()){
                 switch(com.getType()){
                     case MESSAGE:
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', com.getValue()));
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', com.getValue().replace("%name%", ach.getName())));
                         break;
                 }
             }
