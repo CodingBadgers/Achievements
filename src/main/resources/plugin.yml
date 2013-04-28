@@ -1,0 +1,11 @@
+name: Achievements
+author: Lolmewn
+version: 0.1
+description: Adds achievements to the game
+main: nl.lolmewn.achievements.Main
+softdepend: [Stats]
+commands:
+  achievements:
+    description: Main command for Achievements
+    usage: Do /<command> to view your achievements!
+    aliases: [achiev, achievement]

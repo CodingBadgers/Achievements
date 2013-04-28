@@ -1,0 +1,13 @@
+1: 
+  name: TestAchievement
+  goals:
+  - BLOCK_BREAK 500 TOTAL
+  rewards:
+    money: 50
+    items: 35.3,10;1,10
+    commands:
+    - stats %player%
+  onComplete:
+    messages:
+    - You've completed the %name% achievement!
+    - &4You got some money and stuffs.
