@@ -10,6 +10,7 @@ import nl.lolmewn.achievements.completion.Completion;
 import nl.lolmewn.achievements.goal.Goal;
 import nl.lolmewn.achievements.player.AchievementPlayer;
 import nl.lolmewn.achievements.reward.Reward;
+import nl.lolmewn.stats.StatType;
 import nl.lolmewn.stats.api.StatUpdateEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -49,13 +50,29 @@ public class EventListener implements Listener{
                     cont = true;
                     break;
                 }
-                if(event.getNewValue() < g.getAmount()){
-                    cont = true;
-                    break;
-                }
-                if(!Arrays.toString(event.getVars()).equalsIgnoreCase(Arrays.toString(g.getVariables()))){
-                    cont = true;
-                    break;
+                if(g.isGlobal()){
+                    int totalValue = 0;
+                    for(Object[] vars : event.getStat().getAllVariables()){
+                        if(event.getStatType().equals(StatType.MOVE)){
+                            totalValue+= event.getStat().getValueDouble(vars);
+                        }else{
+                            totalValue+= event.getStat().getValue(vars);
+                        }
+                    }
+                    totalValue+=event.getUpdateValue();
+                    if(g.getAmount() > totalValue){
+                        cont = true;
+                        break;
+                    }
+                }else{
+                    if(event.getNewValue() < g.getAmount()){
+                        cont = true;
+                        break;
+                    }
+                    if(!Arrays.toString(event.getVars()).equalsIgnoreCase(Arrays.toString(g.getVariables()))){
+                        cont = true;
+                        break;
+                    }
                 }
             }
             if(cont){
@@ -99,7 +116,6 @@ public class EventListener implements Listener{
                         break;
                 }
             }
-            //achievement done! yay!
         }
     }
     
