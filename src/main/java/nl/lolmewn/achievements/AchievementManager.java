@@ -37,7 +37,6 @@ public class AchievementManager {
                 Achievement ach = new Achievement(plugin);
                 if(ach.load(section)){
                     this.achievements.put(id, ach);
-                    ach.setBukkitAchievementId(plugin.addEnum(org.bukkit.Achievement.class, ach.getName()));
                 }
             }catch(NumberFormatException e){
                 plugin.getLogger().warning("Failed to load achievement, ID was not an int: " + key);

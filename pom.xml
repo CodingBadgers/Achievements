@@ -57,5 +57,10 @@
             <version>1.22</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.spout</groupId>
+            <artifactId>spoutapi</artifactId>
+            <version>dev-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>
