@@ -143,11 +143,11 @@ public class Main extends JavaPlugin {
             Field map = enumType.getDeclaredField("BY_ID");
             map.setAccessible(true);
             Map mapObject =((Map)map.get(null));
-            mapObject.put(id, newValue);
+            mapObject.put(((org.bukkit.Achievement)newValue).getId(), newValue);
             Collection<org.bukkit.Achievement> col = mapObject.values();
             System.out.println("Achievements: " + Arrays.toString(col.toArray()));
             cleanEnumCache(enumType);
-            return id;
+            return ((org.bukkit.Achievement)newValue).getId();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage(), e);
