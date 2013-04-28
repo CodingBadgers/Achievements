@@ -4,10 +4,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import nl.lolmewn.stats.api.StatsAPI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -147,6 +144,7 @@ public class Main extends JavaPlugin {
             map.setAccessible(true);
             Map mapObject =((Map)map.get(null));
             mapObject.put(id, newValue);
+            Collection<org.bukkit.Achievement> col = mapObject.values();
             cleanEnumCache(enumType);
             return id;
         } catch (Exception e) {
