@@ -10,6 +10,7 @@ import java.util.List;
 import nl.lolmewn.stats.api.StatsAPI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import sun.reflect.ConstructorAccessor;
@@ -41,9 +42,6 @@ public class Main extends JavaPlugin {
         settings.loadConfig();
         aManager = new AchievementManager(this);
         aManager.loadAchievements();
-        for (Achievement ach : aManager.getAchievements()) {
-            this.addEnum(org.bukkit.Achievement.class, ach.getName());
-        }
     }
     
     public Settings getSettings() {
@@ -63,6 +61,7 @@ public class Main extends JavaPlugin {
             this.getLogger().info("[Debug] " + message);
         }
     }
+    //<editor-fold defaultstate="collapsed" desc="Reflectionstuff">
     private ReflectionFactory reflectionFactory = ReflectionFactory.getReflectionFactory();
     
     private void setFailsafeFieldValue(Field field, Object target, Object value) throws NoSuchFieldException,
@@ -89,8 +88,8 @@ public class Main extends JavaPlugin {
     }
     
     private void cleanEnumCache(Class<?> enumClass) throws NoSuchFieldException, IllegalAccessException {
-        blankField(enumClass, "enumConstantDirectory"); 
-        blankField(enumClass, "enumConstants"); 
+        blankField(enumClass, "enumConstantDirectory");
+        blankField(enumClass, "enumConstants");
     }
     
     private ConstructorAccessor getConstructorAccessor(Class<?> enumClass, Class<?>[] additionalParameterTypes)
@@ -110,7 +109,7 @@ public class Main extends JavaPlugin {
         System.arraycopy(additionalValues, 0, parms, 2, additionalValues.length);
         return enumClass.cast(getConstructorAccessor(enumClass, additionalTypes).newInstance(parms));
     }
-
+    
     /**
      * Add an enum instance to the enum class given as argument
      *
@@ -119,7 +118,7 @@ public class Main extends JavaPlugin {
      * @param enumName the name of the new enum instance to be added to the
      * class.
      */
-    public <T extends Enum<?>> void addEnum(Class<T> enumType, String enumName) {
+    public <T extends Enum<?>> int addEnum(Class<T> enumType, String enumName) {
         if (!Enum.class.isAssignableFrom(enumType)) {
             throw new RuntimeException("class " + enumType + " is not an instance of Enum");
         }
@@ -135,28 +134,35 @@ public class Main extends JavaPlugin {
         try {
             T[] previousValues = (T[]) valuesField.get(enumType);
             List<T> values = new ArrayList<T>(Arrays.asList(previousValues));
-            T newValue = (T) makeEnum(enumType, 
-                    enumName, 
+            int id = org.bukkit.Achievement.values().length;
+            T newValue = (T) makeEnum(enumType,
+                    enumName,
                     values.size(),
-                    new Class<?>[]{int.class}, 
-                    new Object[]{org.bukkit.Achievement.values().length + 1});
+                    new Class<?>[]{int.class},
+                    new Object[]{id});
             values.add(newValue);
             setFailsafeFieldValue(valuesField, null, values.toArray((T[]) Array.newInstance(enumType, 0)));
             cleanEnumCache(enumType);
+            return id;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage(), e);
         }
     }
+    //</editor-fold>
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String cm, String[] args){
         if(args.length == 1 && args[0].equalsIgnoreCase("test")){
             org.bukkit.Achievement[] array = org.bukkit.Achievement.values();
             for(org.bukkit.Achievement a : array){
-                System.out.println(a.toString() + " with ID " + a.getId());
+                sender.sendMessage(a.toString() + " with ID " + a.getId());
             }
             return true;
+        }
+        if(args.length == 2 && args[0].equalsIgnoreCase("do")){
+            Player p = (Player)sender;
+            p.awardAchievement(org.bukkit.Achievement.getById(Integer.parseInt(args[1])));
         }
         return false;
     }

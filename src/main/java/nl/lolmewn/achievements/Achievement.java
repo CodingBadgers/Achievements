@@ -24,6 +24,7 @@ public class Achievement {
     private List<Goal> goals = new ArrayList<Goal>();
     private List<Reward> rewards = new ArrayList<Reward>();
     private List<Completion> completions = new ArrayList<Completion>();
+    private int bukkitAchievementId;
 
     public Achievement(Main main) {
         this.main = main;
@@ -122,5 +123,13 @@ public class Achievement {
                 this.completions.add(new Completion(CompletionType.MESSAGE, message));
             }
         }
+    }
+    
+    public void setBukkitAchievementId(int id){
+        this.bukkitAchievementId = id;
+    }
+    
+    public int getBukkitAchievementId(){
+        return this.bukkitAchievementId;
     }
 }
