@@ -7,6 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import nl.lolmewn.stats.api.StatsAPI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -142,6 +143,9 @@ public class Main extends JavaPlugin {
                     new Object[]{id});
             values.add(newValue);
             setFailsafeFieldValue(valuesField, null, values.toArray((T[]) Array.newInstance(enumType, 0)));
+            Field map = enumType.getDeclaredField("BY_ID");
+            map.setAccessible(true);
+            ((Map)map.get(null)).put(id, newValue);
             cleanEnumCache(enumType);
             return id;
         } catch (Exception e) {
@@ -162,7 +166,13 @@ public class Main extends JavaPlugin {
         }
         if(args.length == 2 && args[0].equalsIgnoreCase("do")){
             Player p = (Player)sender;
-            p.awardAchievement(org.bukkit.Achievement.getById(Integer.parseInt(args[1])));
+            org.bukkit.Achievement ach = org.bukkit.Achievement.getById(Integer.parseInt(args[1]));
+            if(ach == null){
+                sender.sendMessage("NULL");
+                return true;
+            }
+            p.awardAchievement(ach);
+            return true;
         }
         return false;
     }
