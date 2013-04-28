@@ -25,6 +25,10 @@
             <id>plugin-repo</id>
             <url>http://bukkit.jacekk.co.uk/plugin_repo/repo/</url>
         </repository>
+        <repository>
+            <id>local-repo</id>
+            <url>file://C:\Users\Lolmewn\.m2\repository</url>
+        </repository>
     </repositories>
     <build>
         <plugins>
