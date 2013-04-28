@@ -6,6 +6,7 @@ package nl.lolmewn.achievements;
 import java.util.ArrayList;
 import java.util.List;
 import nl.lolmewn.achievements.completion.Completion;
+import nl.lolmewn.achievements.completion.CompletionType;
 import nl.lolmewn.achievements.goal.Goal;
 import nl.lolmewn.achievements.reward.Reward;
 import nl.lolmewn.achievements.reward.RewardType;
@@ -30,7 +31,7 @@ public class Achievement {
 
     public boolean load(ConfigurationSection loadFrom) {
         name = loadFrom.getString("name");
-        for (String goal : loadFrom.getConfigurationSection("goals").getKeys(false)) {
+        for (String goal : loadFrom.getStringList("goals")) {
             String[] split = goal.split(" ");
             if (split.length < 3) {
                 main.getLogger().warning("Unable to load achievement " + name + ", goal is set up wrong: " + goal);
@@ -109,13 +110,17 @@ public class Achievement {
             }
         }
         if(loadFrom.contains("commands")){
-            for(String command : loadFrom.getConfigurationSection("commands").getKeys(false)){
+            for(String command : loadFrom.getStringList("commands")){
                 this.rewards.add(new Reward(RewardType.COMMAND, command));
             }
         }
     }
 
     private void loadOnComplete(ConfigurationSection loadFrom) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        if(loadFrom.contains("messages")){
+            for(String message : loadFrom.getStringList("messages")){
+                this.completions.add(new Completion(CompletionType.MESSAGE, message));
+            }
+        }
     }
 }
