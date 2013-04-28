@@ -91,7 +91,7 @@ public class EventListener implements Listener{
                         int amount = Integer.parseInt(itemString.split(",")[1]);
                         ItemStack stack;
                         if(item.contains(".")){
-                            stack = new ItemStack(Material.getMaterial(Integer.parseInt(item.split(".")[0])), amount, Short.parseShort(item.split(".")[1]));
+                            stack = new ItemStack(Material.getMaterial(Integer.parseInt(item.split("\\.")[0])), amount, Short.parseShort(item.split("\\.")[1]));
                         }else{
                             stack = new ItemStack(Material.getMaterial(Integer.parseInt(item)), amount);
                         }
