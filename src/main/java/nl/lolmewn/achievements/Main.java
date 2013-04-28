@@ -145,7 +145,8 @@ public class Main extends JavaPlugin {
             setFailsafeFieldValue(valuesField, null, values.toArray((T[]) Array.newInstance(enumType, 0)));
             Field map = enumType.getDeclaredField("BY_ID");
             map.setAccessible(true);
-            ((Map)map.get(null)).put(id, newValue);
+            Map mapObject =((Map)map.get(null));
+            mapObject.put(id, newValue);
             cleanEnumCache(enumType);
             return id;
         } catch (Exception e) {
