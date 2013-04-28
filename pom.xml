@@ -5,7 +5,7 @@
 
     <groupId>nl.lolmewn</groupId>
     <artifactId>Achievements</artifactId>
-    <version>0.1-DEV</version>
+    <version>0.1-ALPHA</version>
     <packaging>jar</packaging>
 
     <name>Achievements</name>
