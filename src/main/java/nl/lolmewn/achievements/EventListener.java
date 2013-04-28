@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -105,6 +106,11 @@ public class EventListener implements Listener{
     @EventHandler
     public void onLogin(PlayerLoginEvent event){
         plugin.getPlayerManager().loadPlayer(event.getPlayer().getName());
+    }
+    
+    @EventHandler
+    public void onLogout(PlayerQuitEvent event){
+        plugin.getPlayerManager().savePlayer(event.getPlayer().getName(), true);
     }
     
     public boolean setupEconomy() {

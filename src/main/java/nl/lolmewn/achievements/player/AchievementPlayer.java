@@ -35,4 +35,8 @@ public class AchievementPlayer {
         this.completedAchievements.add(id);
     }
 
+    public List<Integer> getCompletedAchievements() {
+        return this.completedAchievements;
+    }
+
 }
