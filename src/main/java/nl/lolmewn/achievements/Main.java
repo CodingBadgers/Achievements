@@ -102,20 +102,20 @@ public class Main extends JavaPlugin {
     
     private ConstructorAccessor getConstructorAccessor(Class<?> enumClass, Class<?>[] additionalParameterTypes)
             throws NoSuchMethodException {
-        Class<?>[] parameterTypes = new Class[additionalParameterTypes.length + 2];
-        parameterTypes[0] = String.class;
-        parameterTypes[1] = int.class;
-        System.arraycopy(additionalParameterTypes, 0, parameterTypes, 2, additionalParameterTypes.length);
-        return reflectionFactory.newConstructorAccessor(enumClass.getDeclaredConstructor(parameterTypes));
+//        Class<?>[] parameterTypes = new Class[additionalParameterTypes.length + 2];
+//        parameterTypes[0] = String.class;
+//        parameterTypes[1] = int.class;
+//        System.arraycopy(additionalParameterTypes, 0, parameterTypes, 2, additionalParameterTypes.length);
+        return reflectionFactory.newConstructorAccessor(enumClass.getDeclaredConstructor(additionalParameterTypes));
     }
     
     private Object makeEnum(Class<?> enumClass, String value, int ordinal, Class<?>[] additionalTypes,
             Object[] additionalValues) throws Exception {
-        Object[] parms = new Object[additionalValues.length + 2];
-        parms[0] = value;
-        parms[1] = Integer.valueOf(ordinal);
-        System.arraycopy(additionalValues, 0, parms, 2, additionalValues.length);
-        return enumClass.cast(getConstructorAccessor(enumClass, additionalTypes).newInstance(parms));
+//        Object[] parms = new Object[additionalValues.length + 2];
+//        parms[0] = value;
+//        parms[1] = Integer.valueOf(ordinal);
+//        System.arraycopy(additionalValues, 0, parms, 2, additionalValues.length);
+        return enumClass.cast(getConstructorAccessor(enumClass, additionalTypes).newInstance(additionalValues));
     }
 
     /**
