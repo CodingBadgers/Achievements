@@ -152,7 +152,10 @@ public class Main extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String cm, String[] args){
         if(args.length == 1 && args[0].equalsIgnoreCase("test")){
-            System.out.println(Arrays.toString(org.bukkit.Achievement.values()));
+            org.bukkit.Achievement[] array = org.bukkit.Achievement.values();
+            for(org.bukkit.Achievement a : array){
+                System.out.println(a.toString() + " with ID " + a.getId());
+            }
             return true;
         }
         return false;
