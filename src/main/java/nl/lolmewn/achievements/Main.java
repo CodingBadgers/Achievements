@@ -145,6 +145,7 @@ public class Main extends JavaPlugin {
             Map mapObject =((Map)map.get(null));
             mapObject.put(id, newValue);
             Collection<org.bukkit.Achievement> col = mapObject.values();
+            System.out.println("Achievements: " + Arrays.toString(col.toArray()));
             cleanEnumCache(enumType);
             return id;
         } catch (Exception e) {
