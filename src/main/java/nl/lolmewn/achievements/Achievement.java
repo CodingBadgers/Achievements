@@ -20,14 +20,15 @@ import org.bukkit.configuration.ConfigurationSection;
 public class Achievement {
 
     private Main main;
+    private int id;
     private String name;
     private List<Goal> goals = new ArrayList<Goal>();
     private List<Reward> rewards = new ArrayList<Reward>();
     private List<Completion> completions = new ArrayList<Completion>();
-    private int bukkitAchievementId;
 
-    public Achievement(Main main) {
+    public Achievement(Main main, int id) {
         this.main = main;
+        this.id = id;
     }
 
     public boolean load(ConfigurationSection loadFrom) {
@@ -105,7 +106,12 @@ public class Achievement {
                     if(!item.contains(",")){
                         main.getLogger().warning("Unable to load item for achievement" + name + ", no amount set");
                     }else{
-                        this.rewards.add(new Reward(RewardType.ITEM, item));
+                        try{
+                            Integer.parseInt(item.split(",")[1]);
+                            this.rewards.add(new Reward(RewardType.ITEM, item));
+                        }catch(NumberFormatException e){
+                            main.getLogger().warning("Unable to load item for achievement" + name + ", amount is no number");
+                        }
                     }
                 }
             }
@@ -124,12 +130,8 @@ public class Achievement {
             }
         }
     }
-    
-    public void setBukkitAchievementId(int id){
-        this.bukkitAchievementId = id;
-    }
-    
-    public int getBukkitAchievementId(){
-        return this.bukkitAchievementId;
+
+    public int getId() {
+        return this.id;
     }
 }

@@ -34,7 +34,7 @@ public class AchievementManager {
             try{
                 int id = Integer.parseInt(key);
                 ConfigurationSection section = c.getConfigurationSection(key);
-                Achievement ach = new Achievement(plugin);
+                Achievement ach = new Achievement(plugin, id);
                 if(ach.load(section)){
                     this.achievements.put(id, ach);
                 }

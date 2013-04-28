@@ -1,5 +1,6 @@
 package nl.lolmewn.achievements;
 
+import nl.lolmewn.achievements.player.PlayerManager;
 import nl.lolmewn.stats.api.StatsAPI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,6 +13,7 @@ public class Main extends JavaPlugin {
     private StatsAPI api;
     private Settings settings;
     private AchievementManager aManager;
+    private PlayerManager playerManager;
     
     private boolean hasSpout;
     
@@ -34,6 +36,8 @@ public class Main extends JavaPlugin {
         settings.loadConfig();
         aManager = new AchievementManager(this);
         aManager.loadAchievements();
+        playerManager = new PlayerManager(this);
+        loadOnlinePlayers();
         hasSpout = this.getServer().getPluginManager().getPlugin("SpoutPlugin") != null;
     }
     
@@ -49,9 +53,19 @@ public class Main extends JavaPlugin {
         return aManager;
     }
     
+    public PlayerManager getPlayerManager(){
+        return this.playerManager;
+    }
+    
     public void debug(String message) {
         if (this.getSettings().isDebug()) {
             this.getLogger().info("[Debug] " + message);
+        }
+    }
+    
+    public void loadOnlinePlayers(){
+        for(Player p : this.getServer().getOnlinePlayers()){
+            this.playerManager.loadPlayer(p.getName());
         }
     }
     
