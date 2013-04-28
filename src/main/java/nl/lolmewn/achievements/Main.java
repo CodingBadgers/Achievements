@@ -38,6 +38,7 @@ public class Main extends JavaPlugin {
         aManager.loadAchievements();
         playerManager = new PlayerManager(this);
         loadOnlinePlayers();
+        this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
         hasSpout = this.getServer().getPluginManager().getPlugin("SpoutPlugin") != null;
     }
     
