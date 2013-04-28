@@ -102,20 +102,20 @@ public class Main extends JavaPlugin {
     
     private ConstructorAccessor getConstructorAccessor(Class<?> enumClass, Class<?>[] additionalParameterTypes)
             throws NoSuchMethodException {
-//        Class<?>[] parameterTypes = new Class[additionalParameterTypes.length + 2];
-//        parameterTypes[0] = String.class;
-//        parameterTypes[1] = int.class;
-//        System.arraycopy(additionalParameterTypes, 0, parameterTypes, 2, additionalParameterTypes.length);
-        return reflectionFactory.newConstructorAccessor(enumClass.getDeclaredConstructor(additionalParameterTypes));
+        Class<?>[] parameterTypes = new Class[additionalParameterTypes.length + 2];
+        parameterTypes[0] = String.class;
+        parameterTypes[1] = int.class;
+        System.arraycopy(additionalParameterTypes, 0, parameterTypes, 2, additionalParameterTypes.length);
+        return reflectionFactory.newConstructorAccessor(enumClass.getDeclaredConstructor(parameterTypes));
     }
     
     private Object makeEnum(Class<?> enumClass, String value, int ordinal, Class<?>[] additionalTypes,
             Object[] additionalValues) throws Exception {
-//        Object[] parms = new Object[additionalValues.length + 2];
-//        parms[0] = value;
-//        parms[1] = Integer.valueOf(ordinal);
-//        System.arraycopy(additionalValues, 0, parms, 2, additionalValues.length);
-        return enumClass.cast(getConstructorAccessor(enumClass, additionalTypes).newInstance(additionalValues));
+        Object[] parms = new Object[additionalValues.length + 2];
+        parms[0] = value;
+        parms[1] = Integer.valueOf(ordinal);
+        System.arraycopy(additionalValues, 0, parms, 2, additionalValues.length);
+        return enumClass.cast(getConstructorAccessor(enumClass, additionalTypes).newInstance(parms));
     }
 
     /**
@@ -154,7 +154,7 @@ public class Main extends JavaPlugin {
             T newValue = (T) makeEnum(enumType, // The target enum class
                     enumName, // THE NEW ENUM INSTANCE TO BE DYNAMICALLY ADDED
                     values.size(),
-                    new Class<?>[]{Integer.class}, // could be used to pass values to the enum constuctor if needed
+                    new Class<?>[]{int.class}, // could be used to pass values to the enum constuctor if needed
                     new Object[]{org.bukkit.Achievement.values().length + 1}); // could be used to pass values to the enum constuctor if needed
 
             // 4. add new value
