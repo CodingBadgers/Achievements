@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import nl.lolmewn.stats.api.StatsAPI;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import sun.reflect.ConstructorAccessor;
@@ -65,21 +67,12 @@ public class Main extends JavaPlugin {
     
     private void setFailsafeFieldValue(Field field, Object target, Object value) throws NoSuchFieldException,
             IllegalAccessException {
-
-        // let's make the field accessible
         field.setAccessible(true);
-
-        // next we change the modifier in the Field instance to
-        // not be final anymore, thus tricking reflection into
-        // letting us modify the static final field
         Field modifiersField = Field.class.getDeclaredField("modifiers");
         modifiersField.setAccessible(true);
         int modifiers = modifiersField.getInt(field);
-
-        // blank out the final bit in the modifiers int
         modifiers &= ~Modifier.FINAL;
         modifiersField.setInt(field, modifiers);
-        
         FieldAccessor fa = reflectionFactory.newFieldAccessor(field, false);
         fa.set(target, value);
     }
@@ -96,8 +89,8 @@ public class Main extends JavaPlugin {
     }
     
     private void cleanEnumCache(Class<?> enumClass) throws NoSuchFieldException, IllegalAccessException {
-        blankField(enumClass, "enumConstantDirectory"); // Sun (Oracle?!?) JDK 1.5/6
-        blankField(enumClass, "enumConstants"); // IBM JDK
+        blankField(enumClass, "enumConstantDirectory"); 
+        blankField(enumClass, "enumConstants"); 
     }
     
     private ConstructorAccessor getConstructorAccessor(Class<?> enumClass, Class<?>[] additionalParameterTypes)
@@ -127,13 +120,9 @@ public class Main extends JavaPlugin {
      * class.
      */
     public <T extends Enum<?>> void addEnum(Class<T> enumType, String enumName) {
-
-        // 0. Sanity checks
         if (!Enum.class.isAssignableFrom(enumType)) {
             throw new RuntimeException("class " + enumType + " is not an instance of Enum");
         }
-
-        // 1. Lookup "$VALUES" holder in enum class and get previous enum instances
         Field valuesField = null;
         Field[] fields = org.bukkit.Achievement.class.getDeclaredFields();
         for (Field field : fields) {
@@ -143,32 +132,29 @@ public class Main extends JavaPlugin {
             }
         }
         AccessibleObject.setAccessible(new Field[]{valuesField}, true);
-        
         try {
-
-            // 2. Copy it
             T[] previousValues = (T[]) valuesField.get(enumType);
             List<T> values = new ArrayList<T>(Arrays.asList(previousValues));
-
-            // 3. build new enum
-            T newValue = (T) makeEnum(enumType, // The target enum class
-                    enumName, // THE NEW ENUM INSTANCE TO BE DYNAMICALLY ADDED
+            T newValue = (T) makeEnum(enumType, 
+                    enumName, 
                     values.size(),
-                    new Class<?>[]{int.class}, // could be used to pass values to the enum constuctor if needed
-                    new Object[]{org.bukkit.Achievement.values().length + 1}); // could be used to pass values to the enum constuctor if needed
-
-            // 4. add new value
+                    new Class<?>[]{int.class}, 
+                    new Object[]{org.bukkit.Achievement.values().length + 1});
             values.add(newValue);
-
-            // 5. Set new values field
             setFailsafeFieldValue(valuesField, null, values.toArray((T[]) Array.newInstance(enumType, 0)));
-
-            // 6. Clean enum cache
             cleanEnumCache(enumType);
-            
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+    
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String cm, String[] args){
+        if(args.length == 1 && args[0].equalsIgnoreCase("test")){
+            System.out.println(Arrays.toString(org.bukkit.Achievement.values()));
+            return true;
+        }
+        return false;
     }
 }
