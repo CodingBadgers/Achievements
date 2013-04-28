@@ -49,7 +49,7 @@ public class Achievement {
                 main.getLogger().warning("Unable to load achievement" + name + ", amount must be a number: " + split[1]);
                 return false;
             }
-            if (amount >= 0) {
+            if (amount <= 0) {
                 main.getLogger().warning("Unable to load achievement" + name + ", amount must be greater than 0: " + split[1]);
                 return false;
             }
