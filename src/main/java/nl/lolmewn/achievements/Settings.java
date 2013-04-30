@@ -47,7 +47,11 @@ public class Settings {
         return update;
     }
 
-    public String getVersion() {
+    public double getVersion(){
+        return version.contains("-") ? Double.parseDouble(version.split("-")[0]) : Double.parseDouble(version);
+    }
+    
+    public String getVersionString(){
         return version;
     }
 

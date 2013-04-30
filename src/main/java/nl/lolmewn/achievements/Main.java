@@ -1,5 +1,11 @@
 package nl.lolmewn.achievements;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import nl.lolmewn.achievements.Metrics.Graph;
+import nl.lolmewn.achievements.Metrics.Plotter;
+import nl.lolmewn.achievements.Updater.UpdateType;
 import nl.lolmewn.achievements.player.PlayerManager;
 import nl.lolmewn.stats.api.StatsAPI;
 import org.bukkit.command.Command;
@@ -16,10 +22,13 @@ public class Main extends JavaPlugin {
     private PlayerManager playerManager;
     
     private boolean hasSpout;
+    protected double newVersion;
     
     @Override
     public void onDisable() {
-        
+        for(String player : playerManager.getPlayers()){
+            playerManager.savePlayer(player, true);
+        }
     }
     
     @Override
@@ -40,6 +49,28 @@ public class Main extends JavaPlugin {
         loadOnlinePlayers();
         this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
         hasSpout = this.getServer().getPluginManager().getPlugin("SpoutPlugin") != null;
+        try {
+            Metrics m = new Metrics(this);
+            Graph g = m.createGraph("Stats");
+            Plotter p = new Plotter() {
+                @Override
+                public String getColumnName() {
+                    return "Amount of achievements";
+                }
+
+                @Override
+                public int getValue() {
+                    return getAchievementManager().getAchievements().size();
+                }
+            };
+            g.addPlotter(p);
+            m.addGraph(g);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(this.getSettings().isUpdate()){
+            new Updater(this, "lolmewnachievements", this.getFile(), UpdateType.DEFAULT, true);
+        }
     }
     
     public Settings getSettings() {

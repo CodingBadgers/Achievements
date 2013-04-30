@@ -6,7 +6,9 @@ package nl.lolmewn.achievements.player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.lolmewn.achievements.Main;
@@ -66,6 +68,13 @@ public class PlayerManager {
         YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
         c.set(name + ".done", player.getCompletedAchievements());
     }
-        
+     
+    public Collection<AchievementPlayer> getAchievementPlayers(){
+        return this.players.values();
+    }
+    
+    public Set<String> getPlayers(){
+        return this.players.keySet();
+    }
 
 }
