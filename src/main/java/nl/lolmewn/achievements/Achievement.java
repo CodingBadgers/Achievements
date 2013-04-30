@@ -35,7 +35,7 @@ public class Achievement {
         name = loadFrom.getString("name");
         for (String goal : loadFrom.getStringList("goals")) {
             String[] split = goal.split(" ");
-            if (split.length < 3) {
+            if (split.length < 2) {
                 main.getLogger().warning("Unable to load achievement " + name + ", goal is set up wrong: " + goal);
                 return false;
             }
@@ -56,12 +56,16 @@ public class Achievement {
                 return false;
             }
             Goal g;
-            if (split[2].equalsIgnoreCase("TOTAL")) {
+            if (split.length != 2 || split[2].equalsIgnoreCase("TOTAL")) {
                 g = new Goal(type, amount, true, null);
             } else {
-                Object[] vars = new Object[split.length - 2];
-                System.arraycopy(split, 2, vars, 0, vars.length);
-                g = new Goal(type, amount, false, vars);
+                if(split.length == 2){
+                    g = new Goal(type, amount, false, new Object[]{});
+                }else{
+                    Object[] vars = new Object[split.length - 2];
+                    System.arraycopy(split, 2, vars, 0, vars.length);
+                    g = new Goal(type, amount, false, vars);
+                }
             }
             this.goals.add(g);
             main.debug("Goal created: " + g.toString());
