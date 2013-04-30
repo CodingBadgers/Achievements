@@ -41,18 +41,18 @@ public class Achievement {
             }
             StatType type = StatType.valueOf(split[0]);
             if (type == null) {
-                main.getLogger().warning("Unable to load achievement" + name + ", type was not found: " + split[0]);
+                main.getLogger().warning("Unable to load achievement " + name + ", type was not found: " + split[0]);
                 return false;
             }
             int amount = 0;
             try {
                 amount = Integer.parseInt(split[1]);
             } catch (NumberFormatException e) {
-                main.getLogger().warning("Unable to load achievement" + name + ", amount must be a number: " + split[1]);
+                main.getLogger().warning("Unable to load achievement " + name + ", amount must be a number: " + split[1]);
                 return false;
             }
             if (amount <= 0) {
-                main.getLogger().warning("Unable to load achievement" + name + ", amount must be greater than 0: " + split[1]);
+                main.getLogger().warning("Unable to load achievement " + name + ", amount must be greater than 0: " + split[1]);
                 return false;
             }
             Goal g;
@@ -71,7 +71,7 @@ public class Achievement {
             main.debug("Goal created: " + g.toString());
         }
         if (this.goals.isEmpty()) {
-            main.getLogger().warning("Unable to load achievement" + name + ", no goals specified");
+            main.getLogger().warning("Unable to load achievement " + name + ", no goals specified");
             return false;
         }
         if (loadFrom.contains("rewards")) {
@@ -108,13 +108,13 @@ public class Achievement {
             if(items.contains(";")){
                 for(String item : items.split(";")){
                     if(!item.contains(",")){
-                        main.getLogger().warning("Unable to load item for achievement" + name + ", no amount set");
+                        main.getLogger().warning("Unable to load item for achievement " + name + ", no amount set");
                     }else{
                         try{
                             Integer.parseInt(item.split(",")[1]);
                             this.rewards.add(new Reward(RewardType.ITEM, item));
                         }catch(NumberFormatException e){
-                            main.getLogger().warning("Unable to load item for achievement" + name + ", amount is no number");
+                            main.getLogger().warning("Unable to load item for achievement " + name + ", amount is no number");
                         }
                     }
                 }
