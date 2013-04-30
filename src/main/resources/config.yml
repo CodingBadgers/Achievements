@@ -1,5 +1,5 @@
 #soon
 
-version: ${project.version}
+version: 0.2
 update: true
 debug: false
