@@ -22,6 +22,8 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.getspout.spoutapi.Spout;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 /**
  *
@@ -79,6 +81,12 @@ public class EventListener implements Listener{
                 continue;
             }
             aPlayer.markAsCompleted(ach.getId());
+            if(plugin.hasSpout()){
+                SpoutPlayer p = Spout.getServer().getPlayer(aPlayer.getPlayername());
+                if(p != null){
+                    p.sendNotification("Achievement get!", ach.getName(), Material.BOOK);
+                }
+            }
             boolean invFullMessage = false;
             for(Reward reward : ach.getRewards()){
                 switch(reward.getRewardType()){

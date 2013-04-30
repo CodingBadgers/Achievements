@@ -9,5 +9,5 @@
     - stats %player%
   onComplete:
     messages:
-    - You've completed the %name% achievement!
+    - You\'ve completed the %name% achievement!
     - &4You got some money and stuffs.

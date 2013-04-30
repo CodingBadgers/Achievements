@@ -105,4 +105,8 @@ public class Main extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String cm, String[] args){
         return false;
     }
+
+    public boolean hasSpout() {
+        return this.hasSpout;
+    }
 }
