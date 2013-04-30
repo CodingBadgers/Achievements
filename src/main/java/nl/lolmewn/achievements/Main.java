@@ -48,7 +48,7 @@ public class Main extends JavaPlugin {
         playerManager = new PlayerManager(this);
         loadOnlinePlayers();
         this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
-        hasSpout = this.getServer().getPluginManager().getPlugin("SpoutPlugin") != null;
+        hasSpout = this.getServer().getPluginManager().getPlugin("Spout") != null;
         try {
             Metrics m = new Metrics(this);
             Graph g = m.createGraph("Stats");
