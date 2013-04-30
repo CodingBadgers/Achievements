@@ -67,6 +67,11 @@ public class PlayerManager {
         }
         YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
         c.set(name + ".done", player.getCompletedAchievements());
+        try {
+            c.save(f);
+        } catch (IOException ex) {
+            Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
      
     public Collection<AchievementPlayer> getAchievementPlayers(){
