@@ -39,8 +39,10 @@ public class PlayerManager {
         }else{
             YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
             if(c.contains(name)){
+                plugin.debug("Config contains " + name);
                 for(String stringId : c.getStringList(name + ".done")){
                     Integer id = Integer.parseInt(stringId);
+                    plugin.debug("Loaded " + id + " as complete");
                     player.markAsCompleted(id);
                 }
             }
