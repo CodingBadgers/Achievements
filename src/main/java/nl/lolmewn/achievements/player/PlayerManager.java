@@ -47,7 +47,7 @@ public class PlayerManager {
                 }
             }
         }
-        this.players.put(name, new AchievementPlayer(plugin, name));
+        this.players.put(name, player);
     }
 
     public AchievementPlayer getPlayer(String name) {
