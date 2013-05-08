@@ -26,8 +26,10 @@ public class Main extends JavaPlugin {
     
     @Override
     public void onDisable() {
-        for(String player : playerManager.getPlayers()){
-            playerManager.savePlayer(player, true);
+        if(playerManager != null){
+           for(String player : playerManager.getPlayers()){
+                playerManager.savePlayer(player, true);
+            } 
         }
     }
     
@@ -36,6 +38,12 @@ public class Main extends JavaPlugin {
         Plugin stats = this.getServer().getPluginManager().getPlugin("Stats");
         if (stats == null) {
             this.getLogger().severe("Stats not found, disabling! You can download stats here: http://dev.bukkit.org/server-mods/lolmewnstats/");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        if(!stats.isEnabled()){
+            this.getLogger().severe("Stats plugin has been disabled, Achievements cannot start!");
+            this.getLogger().severe("Please resolve any Stats issues first!");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
