@@ -22,6 +22,7 @@ public class Achievement {
     private Main main;
     private int id;
     private String name;
+    private String description;
     private List<Goal> goals = new ArrayList<Goal>();
     private List<Reward> rewards = new ArrayList<Reward>();
     private List<Completion> completions = new ArrayList<Completion>();
@@ -33,6 +34,7 @@ public class Achievement {
 
     public boolean load(ConfigurationSection loadFrom) {
         name = loadFrom.getString("name");
+        description = loadFrom.getString("description", "The " + name + " achievement.");
         for (String goal : loadFrom.getStringList("goals")) {
             String[] split = goal.split(" ");
             if (split.length < 2) {
@@ -56,7 +58,7 @@ public class Achievement {
                 return false;
             }
             Goal g;
-            if (split.length != 2 || split[2].equalsIgnoreCase("TOTAL")) {
+            if (split.length != 2 && split[2].equalsIgnoreCase("TOTAL")) {
                 g = new Goal(type, amount, true, null);
             } else {
                 if(split.length == 2){
