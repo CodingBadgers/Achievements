@@ -127,6 +127,11 @@ public class Achievement {
                 this.rewards.add(new Reward(RewardType.COMMAND, command));
             }
         }
+        if(loadFrom.contains("consoleCommands")){
+            for(String command : loadFrom.getStringList("consoleCommands")){
+                this.rewards.add(new Reward(RewardType.CONSOLE_COMMAND, command));
+            }
+        }
     }
 
     private void loadOnComplete(ConfigurationSection loadFrom) {

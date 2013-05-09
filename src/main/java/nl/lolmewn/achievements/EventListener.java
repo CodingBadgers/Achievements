@@ -93,6 +93,9 @@ public class EventListener implements Listener{
                     case COMMAND:
                         player.performCommand(reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
                         break;
+                    case CONSOLE_COMMAND:
+                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
+                        break;
                     case ITEM:
                         String itemString = reward.getStringValue();
                         String item = itemString.split(",")[0];

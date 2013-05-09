@@ -12,6 +12,7 @@ public enum RewardType {
     
     MONEY,
     ITEM,
+    CONSOLE_COMMAND,
     COMMAND;
 
 }
