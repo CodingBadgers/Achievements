@@ -30,8 +30,8 @@
             <url>http://repo.spout.org</url>
         </repository>
         <repository>
-            <id>local-repo</id>
-            <url>file://C:\Users\Lolmewn\.m2\repository</url>
+            <id>stats-repo</id>
+            <url>http://centrility.nl:8081/nexus/content/repositories/releases</url>
         </repository>
     </repositories>
     <build>
@@ -70,8 +70,7 @@
         <dependency>
             <groupId>nl.lolmewn.stats</groupId>
             <artifactId>Stats</artifactId>
-            <version>1.22</version>
-            <scope>provided</scope>
+            <version>1.25</version>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
