@@ -73,6 +73,7 @@ public class Main extends JavaPlugin {
             };
             g.addPlotter(p);
             m.addGraph(g);
+            m.start();
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
