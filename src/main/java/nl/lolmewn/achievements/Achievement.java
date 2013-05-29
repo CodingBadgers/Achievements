@@ -41,7 +41,13 @@ public class Achievement {
                 main.getLogger().warning("Unable to load achievement " + name + ", goal is set up wrong: " + goal);
                 return false;
             }
-            StatType type = StatType.valueOf(split[0]);
+            StatType type;
+            try{
+                type = StatType.valueOf(split[0]);
+            }catch(Exception e){
+                main.getLogger().warning("Unable to load achievement " + name + ", type was not found: " + split[0]);
+                return false;
+            } 
             if (type == null) {
                 main.getLogger().warning("Unable to load achievement " + name + ", type was not found: " + split[0]);
                 return false;
@@ -144,5 +150,9 @@ public class Achievement {
 
     public int getId() {
         return this.id;
+    }
+    
+    public String getDescription(){
+        return this.description;
     }
 }

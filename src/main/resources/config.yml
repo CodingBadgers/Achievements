@@ -1,5 +1,8 @@
-#soon
+############################################
+####   Achievements - made by Lolmewn   ####
+#### Globalstats: http://bit.ly/12uI8Oq ####
+############################################
 
-version: 0.5
+version: ${project.version}
 update: true
 debug: false
