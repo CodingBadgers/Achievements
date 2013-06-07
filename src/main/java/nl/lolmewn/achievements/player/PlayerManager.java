@@ -28,6 +28,9 @@ public class PlayerManager {
     }
     
     public void loadPlayer(String name){
+        if(players.containsKey(name)){
+            return;
+        }
         AchievementPlayer player = new AchievementPlayer(plugin, name);
         File f = new File(plugin.getDataFolder(), "players.yml");
         if(!f.exists()){
@@ -73,6 +76,9 @@ public class PlayerManager {
             c.save(f);
         } catch (IOException ex) {
             Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(remove){
+            this.players.remove(name);
         }
     }
      
