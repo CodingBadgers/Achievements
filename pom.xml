@@ -4,7 +4,7 @@
 
     <groupId>nl.lolmewn.achievements</groupId>
     <artifactId>Achievements</artifactId>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.6</version>
     <packaging>jar</packaging>
 
     <name>Achievements</name>
