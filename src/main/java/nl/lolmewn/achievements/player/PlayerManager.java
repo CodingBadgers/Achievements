@@ -58,29 +58,26 @@ public class PlayerManager {
         return this.players.get(name);
     }
 
-    public void savePlayer(String name, boolean remove) {
-        AchievementPlayer player = this.getPlayer(name);
+    public void savePlayer(final String name, final boolean remove) {
+        final AchievementPlayer player = this.getPlayer(name);
         if (player == null) {
             return;
         }
-        File f = new File(plugin.getDataFolder(), "players.yml");
-        if (!f.exists()) {
-            try {
-                f.createNewFile();
-            } catch (IOException ex) {
-                Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
+        this.plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+
+            @Override
+            public void run() {
+                c.set(name + ".done", player.getCompletedAchievements());
+                try {
+                    c.save(new File(plugin.getDataFolder(), "players.yml"));
+                } catch (IOException ex) {
+                    Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (remove) {
+                    players.remove(name);
+                }
             }
-        }
-        YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
-        c.set(name + ".done", player.getCompletedAchievements());
-        try {
-            c.save(f);
-        } catch (IOException ex) {
-            Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if (remove) {
-            this.players.remove(name);
-        }
+        });
     }
 
     public Collection<AchievementPlayer> getAchievementPlayers() {
