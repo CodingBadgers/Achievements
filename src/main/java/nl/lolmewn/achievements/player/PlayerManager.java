@@ -1,7 +1,6 @@
 /*
  *  Copyright 2013 Lolmewn <info@lolmewn.nl>.
  */
-
 package nl.lolmewn.achievements.player;
 
 import java.io.File;
@@ -22,32 +21,34 @@ public class PlayerManager {
 
     private Main plugin;
     private HashMap<String, AchievementPlayer> players = new HashMap<String, AchievementPlayer>();
-    
+    private YamlConfiguration c;
+
     public PlayerManager(Main m) {
         this.plugin = m;
     }
-    
-    public void loadPlayer(String name){
-        if(players.containsKey(name)){
+
+    public void loadPlayer(String name) {
+        if (players.containsKey(name)) {
             return;
         }
         AchievementPlayer player = new AchievementPlayer(plugin, name);
-        File f = new File(plugin.getDataFolder(), "players.yml");
-        if(!f.exists()){
-            try {
-                f.createNewFile();
-            } catch (IOException ex) {
-                Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }else{
-            YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
-            if(c.contains(name)){
-                plugin.debug("Config contains " + name);
-                for(String stringId : c.getStringList(name + ".done")){
-                    Integer id = Integer.parseInt(stringId);
-                    plugin.debug("Loaded " + id + " as complete");
-                    player.markAsCompleted(id);
+        if (c == null) {
+            File f = new File(plugin.getDataFolder(), "players.yml");
+            if (!f.exists()) {
+                try {
+                    f.createNewFile();
+                } catch (IOException ex) {
+                    Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            }
+            c = YamlConfiguration.loadConfiguration(f);
+        }
+        if (c.contains(name)) {
+            plugin.debug("Config contains " + name);
+            for (String stringId : c.getStringList(name + ".done")) {
+                Integer id = Integer.parseInt(stringId);
+                plugin.debug("Loaded " + id + " as complete");
+                player.markAsCompleted(id);
             }
         }
         this.players.put(name, player);
@@ -56,14 +57,14 @@ public class PlayerManager {
     public AchievementPlayer getPlayer(String name) {
         return this.players.get(name);
     }
-    
-    public void savePlayer(String name, boolean remove){
+
+    public void savePlayer(String name, boolean remove) {
         AchievementPlayer player = this.getPlayer(name);
-        if(player == null){
+        if (player == null) {
             return;
         }
         File f = new File(plugin.getDataFolder(), "players.yml");
-        if(!f.exists()){
+        if (!f.exists()) {
             try {
                 f.createNewFile();
             } catch (IOException ex) {
@@ -77,17 +78,16 @@ public class PlayerManager {
         } catch (IOException ex) {
             Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(remove){
+        if (remove) {
             this.players.remove(name);
         }
     }
-     
-    public Collection<AchievementPlayer> getAchievementPlayers(){
+
+    public Collection<AchievementPlayer> getAchievementPlayers() {
         return this.players.values();
     }
-    
-    public Set<String> getPlayers(){
+
+    public Set<String> getPlayers() {
         return this.players.keySet();
     }
-
 }
