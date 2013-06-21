@@ -19,12 +19,21 @@ import org.bukkit.configuration.file.YamlConfiguration;
  */
 public class PlayerManager {
 
-    private Main plugin;
+    private final Main plugin;
     private HashMap<String, AchievementPlayer> players = new HashMap<String, AchievementPlayer>();
-    private YamlConfiguration c;
+    private final YamlConfiguration c;
 
     public PlayerManager(Main m) {
         this.plugin = m;
+        File f = new File(plugin.getDataFolder(), "players.yml");
+        if (!f.exists()) {
+            try {
+                f.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        c = YamlConfiguration.loadConfiguration(f);
     }
 
     public void loadPlayer(String name) {
@@ -32,17 +41,6 @@ public class PlayerManager {
             return;
         }
         AchievementPlayer player = new AchievementPlayer(plugin, name);
-        if (c == null) {
-            File f = new File(plugin.getDataFolder(), "players.yml");
-            if (!f.exists()) {
-                try {
-                    f.createNewFile();
-                } catch (IOException ex) {
-                    Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            c = YamlConfiguration.loadConfiguration(f);
-        }
         if (c.contains(name)) {
             plugin.debug("Config contains " + name);
             for (String stringId : c.getStringList(name + ".done")) {
