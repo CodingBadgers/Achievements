@@ -51,10 +51,10 @@ public class Main extends JavaPlugin {
         settings = new Settings(this);
         settings.checkExistance();
         settings.loadConfig();
-        aManager = new AchievementManager(this);
-        aManager.loadAchievements();
         playerManager = new PlayerManager(this);
         loadOnlinePlayers();
+        aManager = new AchievementManager(this);
+        aManager.loadAchievements();
         this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
         hasSpout = this.getServer().getPluginManager().getPlugin("Spout") != null;
         try {
