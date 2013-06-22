@@ -41,7 +41,17 @@ public class EventListener implements Listener{
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onStatUpdate(StatUpdateEvent event){
         Player player = plugin.getServer().getPlayerExact(event.getPlayer().getPlayername());
-        AchievementPlayer aPlayer = plugin.getPlayerManager().getPlayer(player.getName());
+        AchievementPlayer aPlayer;
+        try{
+            aPlayer = plugin.getPlayerManager().getPlayer(player.getName());
+        }catch(NullPointerException e){
+            plugin.getLogger().warning("NPE happened in StatUpdateEvent, please give these details to Lolmewn (creator of Achievements, this plugin):");
+            plugin.getLogger().warning("Stat: " + event.getStatType().toString() + " ; " + Arrays.toString(event.getVars()));
+            plugin.getLogger().warning("Player: " + event.getPlayer() + " with name + " + event.getPlayer() == null ? "null" : event.getPlayer().getPlayername());
+            plugin.getLogger().warning("Values: " + event.getNewValue() + "=old+" + event.getUpdateValue());
+            return;
+        }
+        
         for(Achievement ach : plugin.getAchievementManager().getAchievements()){
             if(aPlayer.hasCompletedAchievement(ach.getId())){
                 continue;
