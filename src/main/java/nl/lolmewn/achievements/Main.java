@@ -3,8 +3,6 @@ package nl.lolmewn.achievements;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.lolmewn.achievements.Metrics.Graph;
-import nl.lolmewn.achievements.Metrics.Plotter;
 import nl.lolmewn.achievements.Updater.UpdateType;
 import nl.lolmewn.achievements.player.PlayerManager;
 import nl.lolmewn.stats.api.StatsAPI;
@@ -13,6 +11,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
+import org.mcstats.Metrics.Plotter;
 
 public class Main extends JavaPlugin {
     
