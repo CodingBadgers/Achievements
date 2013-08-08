@@ -118,7 +118,7 @@
         <dependency>
             <groupId>nl.lolmewn.stats</groupId>
             <artifactId>Stats</artifactId>
-            <version>1.25</version>
+            <version>1.29</version>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
@@ -128,7 +128,7 @@
         <dependency>
             <groupId>org.getspout</groupId>
             <artifactId>spoutplugin</artifactId>
-            <version>1.5.1-R0.1-SNAPSHOT</version>
+            <version>1.5.2-R0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.mcstats.bukkit</groupId>

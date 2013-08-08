@@ -13,16 +13,22 @@ import nl.lolmewn.stats.StatType;
  */
 public class Goal {
 
-    private StatType type;
+    private GoalType type;
+    private StatType statType;
     private int amount;
     private boolean global;
     private Object[] variables;
     
-    public Goal(StatType type, int amount, boolean global, Object[] variables) {
+    public Goal(GoalType type, int amount, boolean global, Object[] variables) {
         this.type = type;
         this.amount = amount;
         this.global = global;
         this.variables = variables;
+    }
+    
+    public Goal(StatType type, int amount, boolean global, Object[] variables){
+        this(GoalType.STATS, amount, global, variables);
+        this.statType = type;
     }
 
     public int getAmount() {
@@ -32,9 +38,13 @@ public class Goal {
     public boolean isGlobal() {
         return global;
     }
-
-    public StatType getType() {
+    
+    public GoalType getType(){
         return type;
+    }
+
+    public StatType getStatType() {
+        return statType;
     }
 
     public Object[] getVariables() {
