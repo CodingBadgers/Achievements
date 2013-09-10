@@ -27,11 +27,7 @@ public class Main extends JavaPlugin {
     
     @Override
     public void onDisable() {
-        if(playerManager != null){
-           for(String player : playerManager.getPlayers()){
-                playerManager.savePlayer(player, true);
-            } 
-        }
+        
     }
     
     @Override

@@ -19,6 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.getspout.spoutapi.Spout;
@@ -66,7 +67,7 @@ public class EventListener implements Listener {
                 boolean breaking = false;
                 switch (g.getType()) {
                     case STATS:
-                        if(handleStatsGoal(event, ach, g, aPlayer)){
+                        if (handleStatsGoal(event, ach, g, aPlayer)) {
                             cont = true;
                             breaking = true;
                         }
@@ -79,11 +80,7 @@ public class EventListener implements Listener {
                 if (g.isGlobal()) {
                     int totalValue = 0;
                     for (Object[] vars : event.getStatData().getAllVariables()) {
-                        if (event.getStat().equals(plugin.getAPI().getStat(g.getStatType().makeMePretty()))) {
-                            totalValue += event.getStatData().getValueDouble(vars);
-                        } else {
-                            totalValue += event.getStatData().getValue(vars);
-                        }
+                        totalValue += event.getStatData().getValue(vars);
                     }
                     totalValue += event.getUpdateValue();
                     if (g.getAmount() > totalValue) {
@@ -164,11 +161,22 @@ public class EventListener implements Listener {
         plugin.getPlayerManager().savePlayer(event.getPlayer().getName(), true);
     }
 
+    @EventHandler
+    public void onDisable(PluginDisableEvent event) {
+        if (event.getPlugin().equals(this.plugin)) {
+            if (plugin.getPlayerManager() != null) {
+                for (String player : plugin.getPlayerManager().getPlayers()) {
+                    plugin.getPlayerManager().savePlayer(player, true);
+                }
+            }
+        }
+    }
+
     public boolean setupEconomy() {
         if (economy != null) {
             return true;
         }
-        if(plugin.getServer().getPluginManager().getPlugin("Vault") == null){
+        if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
         RegisteredServiceProvider<Economy> economyProvider = this.plugin.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
@@ -185,11 +193,7 @@ public class EventListener implements Listener {
         if (g.isGlobal()) {
             int totalValue = 0;
             for (Object[] vars : event.getStatData().getAllVariables()) {
-                if (event.getStat().equals(plugin.getAPI().getStat("Move"))) {
-                    totalValue += event.getStatData().getValueDouble(vars);
-                } else {
-                    totalValue += event.getStatData().getValue(vars);
-                }
+                totalValue += event.getStatData().getValue(vars);
             }
             totalValue += event.getUpdateValue();
             if (g.getAmount() > totalValue) {
