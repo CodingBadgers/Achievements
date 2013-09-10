@@ -22,15 +22,15 @@
         </repository>
         <repository>
             <id>plugin-repo</id>
-            <url>http://bukkit.jacekk.co.uk/plugin_repo/repo/</url>
+            <url>http://bukkit.jacekk.co.uk/plugin_repo/</url>
         </repository>
         <repository>
             <id>spout-repo2</id>
             <url>http://repo.spout.org</url>
         </repository>
         <repository>
-            <id>stats-repo</id>
-            <url>http://centrility.nl:8081/nexus/content/repositories/releases</url>
+            <id>Centrility snapshots</id>
+            <url>http://centrility.nl:8081/nexus/content/repositories/snapshots</url>
         </repository>
         <repository>
             <id>McStats</id>
@@ -110,30 +110,37 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.bukkit.dev</groupId>
+            <artifactId>vault</artifactId>
+            <version>1.2.26</version>
+        </dependency>
+        <dependency>
             <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.5.1-R0.1</version>
-            <type>jar</type> 
+            <artifactId>bukkit</artifactId> 
+            <version>1.6.2-R0.2-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>nl.lolmewn.stats</groupId>
-            <artifactId>Stats</artifactId>
-            <version>1.29</version>
-        </dependency>
-        <dependency>
-            <groupId>net.milkbowl.vault</groupId>
-            <artifactId>Vault</artifactId>
-            <version>1.2.21-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.getspout</groupId>
-            <artifactId>spoutplugin</artifactId>
-            <version>1.5.2-R0.2-SNAPSHOT</version>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId> 
+            <version>1.6.2-R0.2-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.mcstats.bukkit</groupId>
             <artifactId>metrics</artifactId>
             <version>R7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.getspout</groupId>
+            <artifactId>spoutplugin</artifactId>
+            <version>1.6.2-R0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>nl.lolmewn.stats</groupId>
+            <artifactId>Stats</artifactId>
+            <version>1.30-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <distributionManagement>

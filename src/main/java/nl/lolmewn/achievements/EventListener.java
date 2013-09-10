@@ -7,7 +7,6 @@ import java.util.Arrays;
 import net.milkbowl.vault.economy.Economy;
 import nl.lolmewn.achievements.completion.Completion;
 import nl.lolmewn.achievements.goal.Goal;
-import nl.lolmewn.achievements.goal.GoalType;
 import nl.lolmewn.achievements.player.AchievementPlayer;
 import nl.lolmewn.achievements.reward.Reward;
 import nl.lolmewn.stats.StatType;
@@ -39,7 +38,7 @@ public class EventListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onStatUpdate(StatUpdateEvent event) {
+    public void onStatUpdate(StatUpdateEvent event) throws Exception {
         Player player = plugin.getServer().getPlayerExact(event.getPlayer().getPlayername());
         AchievementPlayer aPlayer;
         try {
@@ -49,6 +48,12 @@ public class EventListener implements Listener {
             plugin.getLogger().warning("Stat: " + event.getStatType().toString() + " ; " + Arrays.toString(event.getVars()));
             plugin.getLogger().warning("Player: " + event.getPlayer() + " with name + " + event.getPlayer() == null ? "null" : event.getPlayer().getPlayername());
             plugin.getLogger().warning("Values: " + event.getNewValue() + "=old+" + event.getUpdateValue());
+            Exception ex = new Exception();
+            Throwable t = ex.fillInStackTrace();
+            t.printStackTrace();
+            plugin.getLogger().warning("=======The above is the stacktrace of a new exception=======");
+            plugin.getLogger().warning("=======Below is the original exception               =======");
+            e.printStackTrace();
             return;
         }
 
@@ -67,17 +72,17 @@ public class EventListener implements Listener {
                         }
                         break;
                 }
-                if (!event.getStatType().equals(g.getStatType())) {
+                if (!event.getStat().equals(plugin.getAPI().getStat(g.getStatType().makeMePretty()))) {
                     cont = true;
                     break;
                 }
                 if (g.isGlobal()) {
                     int totalValue = 0;
-                    for (Object[] vars : event.getStat().getAllVariables()) {
-                        if (event.getStatType().equals(StatType.MOVE)) {
-                            totalValue += event.getStat().getValueDouble(vars);
+                    for (Object[] vars : event.getStatData().getAllVariables()) {
+                        if (event.getStat().equals(plugin.getAPI().getStat(g.getStatType().makeMePretty()))) {
+                            totalValue += event.getStatData().getValueDouble(vars);
                         } else {
-                            totalValue += event.getStat().getValue(vars);
+                            totalValue += event.getStatData().getValue(vars);
                         }
                     }
                     totalValue += event.getUpdateValue();
@@ -174,16 +179,16 @@ public class EventListener implements Listener {
     }
 
     private boolean handleStatsGoal(StatUpdateEvent event, Achievement ach, Goal g, AchievementPlayer aPlayer) {
-        if (!event.getStatType().equals(g.getStatType())) {
+        if (!event.getStat().equals(plugin.getAPI().getStat(g.getStatType().makeMePretty()))) {
             return true;
         }
         if (g.isGlobal()) {
             int totalValue = 0;
-            for (Object[] vars : event.getStat().getAllVariables()) {
-                if (event.getStatType().equals(StatType.MOVE)) {
-                    totalValue += event.getStat().getValueDouble(vars);
+            for (Object[] vars : event.getStatData().getAllVariables()) {
+                if (event.getStat().equals(plugin.getAPI().getStat("Move"))) {
+                    totalValue += event.getStatData().getValueDouble(vars);
                 } else {
-                    totalValue += event.getStat().getValue(vars);
+                    totalValue += event.getStatData().getValue(vars);
                 }
             }
             totalValue += event.getUpdateValue();

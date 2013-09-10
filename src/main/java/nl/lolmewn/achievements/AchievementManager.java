@@ -18,6 +18,7 @@ public class AchievementManager {
 
     private Main plugin;
     private HashMap<Integer, Achievement> achievements = new HashMap<Integer, Achievement>();
+    private int nextFreeId;
     
     public AchievementManager(Main aThis) {
         plugin = aThis;
@@ -36,16 +37,36 @@ public class AchievementManager {
                 ConfigurationSection section = c.getConfigurationSection(key);
                 Achievement ach = new Achievement(plugin, id);
                 if(ach.load(section)){
-                    this.achievements.put(id, ach);
+                    this.addAchievement(id, ach);
+                    calculateNextFreeId(id);
                 }
             }catch(NumberFormatException e){
                 plugin.getLogger().warning("Failed to load achievement, ID was not an int: " + key);
             }
         }
     }
+    
+    public void addAchievement(int id, Achievement a){
+        if(this.achievements.containsKey(id)){
+            plugin.getLogger().warning("Duplicate ID found for achievements, "
+                    + "you can only use an ID once. ID: " + id + ", achievement trying to add (failing): " + a.getName());
+        }
+        this.achievements.put(id, a);
+    }
 
     public Collection<Achievement> getAchievements() {
         return achievements.values();
+    }
+
+    private void calculateNextFreeId(int id) {
+        while(this.achievements.containsKey(id + 1)){
+            id++;
+        }
+        this.nextFreeId = id + 1;
+    }
+    
+    public int getNextFreeId(){
+        return this.nextFreeId;
     }
 
 }
