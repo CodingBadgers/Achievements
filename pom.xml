@@ -17,8 +17,8 @@
     </properties>
     <repositories>
         <repository>
-            <id>spout-repo</id>
-            <url>http://nexus.spout.org/content/groups/public/</url>
+            <id>bukkit-repo</id>
+            <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
         <repository>
             <id>plugin-repo</id>
@@ -54,7 +54,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.0</version>
+                <version>2.1</version>
                 <configuration>
                     <minimizeJar>true</minimizeJar>
                     <artifactSet>
@@ -117,13 +117,13 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId> 
-            <version>1.6.2-R0.2-SNAPSHOT</version>
+            <version>1.6.2-R1.1-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId> 
-            <version>1.6.2-R0.2-SNAPSHOT</version>
+            <version>1.6.2-R1.1-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>

@@ -6,8 +6,8 @@ package nl.lolmewn.achievements.player;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.lolmewn.achievements.Main;
@@ -20,7 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class PlayerManager {
 
     private final Main plugin;
-    private HashMap<String, AchievementPlayer> players = new HashMap<String, AchievementPlayer>();
+    private ConcurrentHashMap<String, AchievementPlayer> players = new ConcurrentHashMap<String, AchievementPlayer>();
     private final YamlConfiguration c;
 
     public PlayerManager(Main m) {
