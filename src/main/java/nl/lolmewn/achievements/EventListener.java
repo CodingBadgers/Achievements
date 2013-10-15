@@ -9,7 +9,6 @@ import nl.lolmewn.achievements.completion.Completion;
 import nl.lolmewn.achievements.goal.Goal;
 import nl.lolmewn.achievements.player.AchievementPlayer;
 import nl.lolmewn.achievements.reward.Reward;
-import nl.lolmewn.stats.StatType;
 import nl.lolmewn.stats.api.StatUpdateEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -46,7 +45,7 @@ public class EventListener implements Listener {
             aPlayer = plugin.getPlayerManager().getPlayer(player.getName());
         } catch (NullPointerException e) {
             plugin.getLogger().warning("NPE happened in StatUpdateEvent, please give these details to Lolmewn (creator of Achievements, this plugin):");
-            plugin.getLogger().warning("Stat: " + event.getStatType().toString() + " ; " + Arrays.toString(event.getVars()));
+            plugin.getLogger().warning("Stat: " + event.getStat().getName() + " ; " + Arrays.toString(event.getVars()));
             plugin.getLogger().warning("Player: " + event.getPlayer() + " with name + " + event.getPlayer() == null ? "null" : event.getPlayer().getPlayername());
             plugin.getLogger().warning("Values: " + event.getNewValue() + "=old+" + event.getUpdateValue());
             Exception ex = new Exception();
