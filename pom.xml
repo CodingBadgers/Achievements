@@ -1,3 +1,4 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -8,29 +9,30 @@
     <packaging>jar</packaging>
 
     <name>Achievements</name>
+    <url>http://maven.apache.org</url>
     <ciManagement>
         <system>hudson</system>
-        <url>http://localhost:8080/job/Achievements/</url>
+        <url>http://localhost:8080/job/Highscores/</url>
     </ciManagement>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <repositories>
         <repository>
+            <id>stats-repo</id>
+            <url>http://centrility.nl:8081/nexus/content/groups/public</url>
+        </repository>
+        <repository>
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
         <repository>
+            <id>mcstats-repo</id>
+            <url>http://repo.mcstats.org/content/repositories/public/</url>
+        </repository>
+        <repository>
             <id>vault-repo</id>
             <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
-        </repository>
-        <repository>
-            <id>Centrility snapshots</id>
-            <url>http://centrility.nl:8081/nexus/content/repositories/releases/</url>
-        </repository>
-        <repository>
-            <id>McStats</id>
-            <url>http://repo.mcstats.org/content/repositories/public/</url>
         </repository>
     </repositories>
     <build>
@@ -106,21 +108,20 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.6.2-R1.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>net.milkbowl.vault</groupId>
-            <artifactId>vault</artifactId>
+            <artifactId>Vault</artifactId>
             <version>1.2.27</version>
         </dependency>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId> 
-            <version>1.6.4-R0.1-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId> 
-            <version>1.6.4-R0.1-SNAPSHOT</version>
-            <type>jar</type>
+            <groupId>nl.lolmewn.stats</groupId>
+            <artifactId>Stats</artifactId>
+            <version>1.36-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.mcstats.bukkit</groupId>
@@ -128,9 +129,10 @@
             <version>R7</version>
         </dependency>
         <dependency>
-            <groupId>nl.lolmewn.stats</groupId>
-            <artifactId>Stats</artifactId>
-            <version>1.36</version>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.6.2-R1.1-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <distributionManagement>
