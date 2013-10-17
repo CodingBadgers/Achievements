@@ -26,7 +26,7 @@
         </repository>
         <repository>
             <id>Centrility snapshots</id>
-            <url>http://lolmewn.nl:8081/nexus/content/groups/public/</url>
+            <url>http://centrility.nl:8081/nexus/content/repositories/releases/</url>
         </repository>
         <repository>
             <id>McStats</id>
