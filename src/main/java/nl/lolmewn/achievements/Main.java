@@ -75,7 +75,7 @@ public class Main extends JavaPlugin {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         if(this.getSettings().isUpdate()){
-            new Updater(this, "lolmewnachievements", this.getFile(), UpdateType.DEFAULT, false);
+            new Updater(this, 55920, this.getFile(), UpdateType.DEFAULT, false);
         }
     }
     
