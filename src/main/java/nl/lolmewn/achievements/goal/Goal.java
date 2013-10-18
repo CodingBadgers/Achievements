@@ -6,6 +6,7 @@ package nl.lolmewn.achievements.goal;
 
 import java.util.Arrays;
 import nl.lolmewn.stats.StatType;
+import nl.lolmewn.stats.api.Stat;
 
 /**
  *
@@ -14,7 +15,7 @@ import nl.lolmewn.stats.StatType;
 public class Goal {
 
     private GoalType type;
-    private StatType statType;
+    private Stat stat;
     private int amount;
     private boolean global;
     private Object[] variables;
@@ -26,9 +27,9 @@ public class Goal {
         this.variables = variables;
     }
     
-    public Goal(StatType type, int amount, boolean global, Object[] variables){
+    public Goal(Stat type, int amount, boolean global, Object[] variables){
         this(GoalType.STATS, amount, global, variables);
-        this.statType = type;
+        this.stat = type;
     }
 
     public int getAmount() {
@@ -43,8 +44,8 @@ public class Goal {
         return type;
     }
 
-    public StatType getStatType() {
-        return statType;
+    public Stat getStat() {
+        return stat;
     }
 
     public Object[] getVariables() {

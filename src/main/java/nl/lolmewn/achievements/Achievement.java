@@ -11,6 +11,7 @@ import nl.lolmewn.achievements.goal.Goal;
 import nl.lolmewn.achievements.reward.Reward;
 import nl.lolmewn.achievements.reward.RewardType;
 import nl.lolmewn.stats.StatType;
+import nl.lolmewn.stats.api.Stat;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -41,16 +42,14 @@ public class Achievement {
                 main.getLogger().warning("Unable to load achievement " + name + ", goal is set up wrong: " + goal);
                 return false;
             }
-            StatType type;
-            try{
-                type = StatType.valueOf(split[0]);
-            }catch(Exception e){
-                main.getLogger().warning("Unable to load achievement " + name + ", type was not found: " + split[0]);
-                return false;
-            } 
-            if (type == null) {
-                main.getLogger().warning("Unable to load achievement " + name + ", type was not found: " + split[0]);
-                return false;
+            Stat stat = main.getAPI().getStat(split[0]);
+            if (stat == null) {
+                String statName = (split[0].substring(0, 1).toUpperCase() + split[0].substring(1).toLowerCase()).replace("_", " ");
+                stat = main.getAPI().getStat(statName);
+                if (stat == null) {
+                    main.getLogger().warning("Unable to load achievement " + statName + ", type was not found: " + split[0]);
+                    return false;
+                }
             }
             int amount = 0;
             try {
@@ -65,14 +64,14 @@ public class Achievement {
             }
             Goal g;
             if (split.length != 2 && split[2].equalsIgnoreCase("TOTAL")) {
-                g = new Goal(type, amount, true, null);
+                g = new Goal(stat, amount, true, null);
             } else {
-                if(split.length == 2){
-                    g = new Goal(type, amount, false, new Object[]{});
-                }else{
+                if (split.length == 2) {
+                    g = new Goal(stat, amount, false, new Object[]{});
+                } else {
                     Object[] vars = new Object[split.length - 2];
                     System.arraycopy(split, 2, vars, 0, vars.length);
-                    g = new Goal(type, amount, false, vars);
+                    g = new Goal(stat, amount, false, vars);
                 }
             }
             this.goals.add(g);
@@ -85,7 +84,7 @@ public class Achievement {
         if (loadFrom.contains("rewards")) {
             loadRewards(loadFrom.getConfigurationSection("rewards"));
         }
-        if(loadFrom.contains("onComplete")){
+        if (loadFrom.contains("onComplete")) {
             loadOnComplete(loadFrom.getConfigurationSection("onComplete"));
         }
         return true;
@@ -102,8 +101,8 @@ public class Achievement {
     public List<Completion> getCompletions() {
         return this.completions;
     }
-    
-    public String getName(){
+
+    public String getName() {
         return this.name;
     }
 
@@ -113,36 +112,36 @@ public class Achievement {
         }
         if (loadFrom.contains("items")) {
             String items = loadFrom.getString("items");
-            if(items.contains(";")){
-                for(String item : items.split(";")){
-                    if(!item.contains(",")){
+            if (items.contains(";")) {
+                for (String item : items.split(";")) {
+                    if (!item.contains(",")) {
                         main.getLogger().warning("Unable to load item for achievement " + name + ", no amount set");
-                    }else{
-                        try{
+                    } else {
+                        try {
                             Integer.parseInt(item.split(",")[1]);
                             this.rewards.add(new Reward(RewardType.ITEM, item));
-                        }catch(NumberFormatException e){
+                        } catch (NumberFormatException e) {
                             main.getLogger().warning("Unable to load item for achievement " + name + ", amount is no number");
                         }
                     }
                 }
             }
         }
-        if(loadFrom.contains("commands")){
-            for(String command : loadFrom.getStringList("commands")){
+        if (loadFrom.contains("commands")) {
+            for (String command : loadFrom.getStringList("commands")) {
                 this.rewards.add(new Reward(RewardType.COMMAND, command));
             }
         }
-        if(loadFrom.contains("consoleCommands")){
-            for(String command : loadFrom.getStringList("consoleCommands")){
+        if (loadFrom.contains("consoleCommands")) {
+            for (String command : loadFrom.getStringList("consoleCommands")) {
                 this.rewards.add(new Reward(RewardType.CONSOLE_COMMAND, command));
             }
         }
     }
 
     private void loadOnComplete(ConfigurationSection loadFrom) {
-        if(loadFrom.contains("messages")){
-            for(String message : loadFrom.getStringList("messages")){
+        if (loadFrom.contains("messages")) {
+            for (String message : loadFrom.getStringList("messages")) {
                 this.completions.add(new Completion(CompletionType.MESSAGE, message));
             }
         }
@@ -151,8 +150,8 @@ public class Achievement {
     public int getId() {
         return this.id;
     }
-    
-    public String getDescription(){
+
+    public String getDescription() {
         return this.description;
     }
 }

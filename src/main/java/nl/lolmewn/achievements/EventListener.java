@@ -70,7 +70,7 @@ public class EventListener implements Listener {
                         }
                         break;
                 }
-                if (!event.getStat().equals(plugin.getAPI().getStat(g.getStatType().makeMePretty()))) {
+                if (!event.getStat().equals(g.getStat())) {
                     cont = true;
                     break;
                 }
@@ -178,7 +178,7 @@ public class EventListener implements Listener {
     }
 
     private boolean handleStatsGoal(StatUpdateEvent event, Achievement ach, Goal g, AchievementPlayer aPlayer) {
-        if (!event.getStat().equals(plugin.getAPI().getStat(g.getStatType().makeMePretty()))) {
+        if (!event.getStat().equals(g.getStat())) {
             return true;
         }
         if (g.isGlobal()) {
