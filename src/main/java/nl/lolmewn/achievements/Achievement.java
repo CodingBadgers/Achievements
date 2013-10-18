@@ -125,6 +125,17 @@ public class Achievement {
                         }
                     }
                 }
+            }else{
+                if (!items.contains(",")) {
+                        main.getLogger().warning("Unable to load item for achievement " + name + ", no amount set");
+                    } else {
+                        try {
+                            Integer.parseInt(items.split(",")[1]);
+                            this.rewards.add(new Reward(RewardType.ITEM, items));
+                        } catch (NumberFormatException e) {
+                            main.getLogger().warning("Unable to load item for achievement " + name + ", amount is no number");
+                        }
+                    }
             }
         }
         if (loadFrom.contains("commands")) {
