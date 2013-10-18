@@ -1,6 +1,6 @@
 name: Achievements
 author: Lolmewn
-version: 0.1
+version: maven-version-number-jenkins-build-number
 description: Adds achievements to the game
 main: nl.lolmewn.achievements.Main
 softdepend: [Stats]
