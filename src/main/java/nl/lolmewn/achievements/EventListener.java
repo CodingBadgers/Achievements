@@ -5,6 +5,7 @@ package nl.lolmewn.achievements;
 
 import java.util.Arrays;
 import net.milkbowl.vault.economy.Economy;
+import nl.lolmewn.achievements.api.AchievementGetEvent;
 import nl.lolmewn.achievements.completion.Completion;
 import nl.lolmewn.achievements.goal.Goal;
 import nl.lolmewn.achievements.player.AchievementPlayer;
@@ -99,6 +100,8 @@ public class EventListener implements Listener {
                 continue;
             }
             aPlayer.markAsCompleted(ach.getId());
+            AchievementGetEvent ae = new AchievementGetEvent(ach, player);
+            plugin.getServer().getPluginManager().callEvent(ae);
             boolean invFullMessage = false;
             for (Reward reward : ach.getRewards()) {
                 switch (reward.getRewardType()) {
