@@ -43,16 +43,7 @@ public class EventListener implements Listener {
         try {
             aPlayer = plugin.getPlayerManager().getPlayer(player.getName());
         } catch (NullPointerException e) {
-            plugin.getLogger().warning("NPE happened in StatUpdateEvent, please give these details to Lolmewn (creator of Achievements, this plugin):");
-            plugin.getLogger().warning("Stat: " + event.getStat().getName() + " ; " + Arrays.toString(event.getVars()));
-            plugin.getLogger().warning("Player: " + event.getPlayer() + " with name + " + event.getPlayer() == null ? "null" : event.getPlayer().getPlayername());
-            plugin.getLogger().warning("Values: " + event.getNewValue() + "=old+" + event.getUpdateValue());
-            Exception ex = new Exception();
-            Throwable t = ex.fillInStackTrace();
-            t.printStackTrace();
-            plugin.getLogger().warning("=======The above is the stacktrace of a new exception=======");
-            plugin.getLogger().warning("=======Below is the original exception               =======");
-            e.printStackTrace();
+            plugin.getLogger().warning("For some weird reason, " + event.getPlayer().getPlayername() + " seems to be " + player == null ? null : "not null, but throwing errors anyway. wut. I don't even know. H4lp plz lulz");
             return;
         }
 
