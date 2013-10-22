@@ -39,14 +39,7 @@ public class EventListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onStatUpdate(StatUpdateEvent event) throws Exception {
         Player player = plugin.getServer().getPlayerExact(event.getPlayer().getPlayername());
-        AchievementPlayer aPlayer;
-        try {
-            aPlayer = plugin.getPlayerManager().getPlayer(player.getName());
-        } catch (NullPointerException e) {
-            plugin.getLogger().warning("For some weird reason, " + event.getPlayer().getPlayername() + " seems to be " + player == null ? null : "not null, but throwing errors anyway. wut. I don't even know. H4lp plz lulz");
-            return;
-        }
-
+        AchievementPlayer aPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getPlayername());
         for (Achievement ach : plugin.getAchievementManager().getAchievements()) {
             if (aPlayer.hasCompletedAchievement(ach.getId())) {
                 continue;
@@ -91,18 +84,21 @@ public class EventListener implements Listener {
                 continue;
             }
             aPlayer.markAsCompleted(ach.getId());
-            AchievementGetEvent ae = new AchievementGetEvent(ach, player);
+            AchievementGetEvent ae = new AchievementGetEvent(ach, aPlayer);
             plugin.getServer().getPluginManager().callEvent(ae);
             boolean invFullMessage = false;
             for (Reward reward : ach.getRewards()) {
                 switch (reward.getRewardType()) {
                     case COMMAND:
-                        player.performCommand(reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
+                        if(player != null) player.performCommand(reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
                         break;
                     case CONSOLE_COMMAND:
                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
                         break;
                     case ITEM:
+                        if(player == null){
+                            break;
+                        }
                         String itemString = reward.getStringValue();
                         String item = itemString.split(",")[0];
                         int amount = Integer.parseInt(itemString.split(",")[1]);
@@ -129,6 +125,7 @@ public class EventListener implements Listener {
             for (Completion com : ach.getCompletions()) {
                 switch (com.getType()) {
                     case MESSAGE:
+                        if(player == null) break;
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', com.getValue().replace("%name%", ach.getName())));
                         break;
                 }

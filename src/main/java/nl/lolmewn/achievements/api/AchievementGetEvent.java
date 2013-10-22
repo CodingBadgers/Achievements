@@ -1,7 +1,7 @@
 package nl.lolmewn.achievements.api;
 
 import nl.lolmewn.achievements.Achievement;
-import org.bukkit.entity.Player;
+import nl.lolmewn.achievements.player.AchievementPlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -14,9 +14,9 @@ public class AchievementGetEvent extends Event{
     private static final HandlerList handlers = new HandlerList();
     
     private Achievement ach;
-    private Player player;
+    private AchievementPlayer player;
     
-    public AchievementGetEvent(Achievement ach, Player player){
+    public AchievementGetEvent(Achievement ach, AchievementPlayer player){
         this.ach = ach;
         this.player = player;
     }
@@ -34,7 +34,7 @@ public class AchievementGetEvent extends Event{
         return ach;
     }
 
-    public Player getPlayer() {
+    public AchievementPlayer getPlayer() {
         return player;
     }
 }
