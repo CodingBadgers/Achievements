@@ -54,7 +54,7 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.1</version>
                 <configuration>
-                    <minimizeJar>true</minimizeJar>
+                    <minimizeJar>false</minimizeJar>
                     <artifactSet>
                         <includes>
                             <include>org.mcstats.bukkit</include>
