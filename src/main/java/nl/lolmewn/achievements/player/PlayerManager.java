@@ -72,7 +72,7 @@ public class PlayerManager {
                     Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 if (remove) {
-                    players.remove(name);
+                    removePlayer(name);
                 }
             }
         });
@@ -84,5 +84,9 @@ public class PlayerManager {
 
     public Set<String> getPlayers() {
         return this.players.keySet();
+    }
+
+    public void removePlayer(String name) {
+        this.players.remove(name);
     }
 }

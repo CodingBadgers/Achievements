@@ -139,8 +139,18 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onLogout(PlayerQuitEvent event) {
-        plugin.getPlayerManager().savePlayer(event.getPlayer().getName(), true);
+    public void onLogout(final PlayerQuitEvent event) {
+        final String name = event.getPlayer().getName();
+        plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+
+            @Override
+            public void run() {
+                if(plugin.getServer().getPlayerExact(name) == null){
+                    plugin.getPlayerManager().removePlayer(name);
+                }
+            }
+        }, 20L);
+        plugin.getPlayerManager().savePlayer(event.getPlayer().getName(), false);
     }
 
     @EventHandler
