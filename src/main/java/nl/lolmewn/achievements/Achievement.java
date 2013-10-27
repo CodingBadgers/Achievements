@@ -47,7 +47,7 @@ public class Achievement {
                 String statName = (split[0].substring(0, 1).toUpperCase() + split[0].substring(1).toLowerCase()).replace("_", " ");
                 stat = main.getAPI().getStat(statName);
                 if (stat == null) {
-                    main.getLogger().warning("Unable to load achievement " + statName + ", type was not found: " + split[0]);
+                    main.getLogger().warning("Unable to load achievement " + name + ", type was not found: " + split[0]);
                     return false;
                 }
             }
