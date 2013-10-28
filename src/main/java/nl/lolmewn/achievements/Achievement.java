@@ -20,13 +20,13 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public class Achievement {
 
-    private Main main;
-    private int id;
+    private final Main main;
+    private final int id;
     private String name;
     private String description;
-    private List<Goal> goals = new ArrayList<Goal>();
-    private List<Reward> rewards = new ArrayList<Reward>();
-    private List<Completion> completions = new ArrayList<Completion>();
+    private final List<Goal> goals = new ArrayList<Goal>();
+    private final List<Reward> rewards = new ArrayList<Reward>();
+    private final List<Completion> completions = new ArrayList<Completion>();
 
     public Achievement(Main main, int id) {
         this.main = main;

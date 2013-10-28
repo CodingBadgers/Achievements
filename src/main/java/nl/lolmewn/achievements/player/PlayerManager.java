@@ -20,7 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class PlayerManager {
 
     private final Main plugin;
-    private ConcurrentHashMap<String, AchievementPlayer> players = new ConcurrentHashMap<String, AchievementPlayer>();
+    private final ConcurrentHashMap<String, AchievementPlayer> players = new ConcurrentHashMap<String, AchievementPlayer>();
     private final YamlConfiguration c;
 
     public PlayerManager(Main m) {

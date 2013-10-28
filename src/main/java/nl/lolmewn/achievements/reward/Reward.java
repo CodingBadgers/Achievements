@@ -10,7 +10,7 @@ package nl.lolmewn.achievements.reward;
  */
 public class Reward {
 
-    private RewardType type;
+    private final RewardType type;
     private String stringValue;
     private int intValue;
     

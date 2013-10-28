@@ -10,8 +10,8 @@ import org.bukkit.plugin.Plugin;
  */
 public class StatsAdapter extends AchievementAdapter{
     
-    private StatsAPI sapi;
-    private AchievementsAPI aapi;
+    private final StatsAPI sapi;
+    private final AchievementsAPI aapi;
     
     public StatsAdapter(AchievementsAPI aapi, StatsAPI sapi){
         this.sapi = sapi;

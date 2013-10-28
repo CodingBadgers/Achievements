@@ -13,8 +13,8 @@ public class AchievementGetEvent extends Event{
    
     private static final HandlerList handlers = new HandlerList();
     
-    private Achievement ach;
-    private AchievementPlayer player;
+    private final Achievement ach;
+    private final AchievementPlayer player;
     
     public AchievementGetEvent(Achievement ach, AchievementPlayer player){
         this.ach = ach;

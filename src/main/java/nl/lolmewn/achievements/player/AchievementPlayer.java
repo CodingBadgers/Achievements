@@ -14,9 +14,9 @@ import nl.lolmewn.achievements.Main;
  */
 public class AchievementPlayer {    
     
-    private Main plugin;
-    private String name;
-    private List<Integer> completedAchievements = new ArrayList<Integer>();
+    private final Main plugin;
+    private final String name;
+    private final List<Integer> completedAchievements = new ArrayList<Integer>();
     
     public AchievementPlayer(Main m, String name) {
         this.plugin = m;

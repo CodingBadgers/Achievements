@@ -29,7 +29,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
  */
 public class EventListener implements Listener {
 
-    private Main plugin;
+    private final Main plugin;
     private Economy economy;
 
     public EventListener(Main m) {

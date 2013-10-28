@@ -13,7 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public class Settings {
 
-    private Main plugin;
+    private final Main plugin;
     
     
     private boolean debug;

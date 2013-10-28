@@ -10,8 +10,8 @@ package nl.lolmewn.achievements.completion;
  */
 public class Completion {
 
-    private CompletionType type;
-    private String value;
+    private final CompletionType type;
+    private final String value;
     
     public Completion(CompletionType type, String value) {
         this.type = type;

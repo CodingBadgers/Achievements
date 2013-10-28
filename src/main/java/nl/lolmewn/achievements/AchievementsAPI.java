@@ -5,7 +5,7 @@ package nl.lolmewn.achievements;
  */
 public class AchievementsAPI {
     
-    private Main m;
+    private final Main m;
     
     protected AchievementsAPI(Main m){
         this.m = m;

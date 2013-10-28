@@ -16,8 +16,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
  */
 public class AchievementManager {
 
-    private Main plugin;
-    private HashMap<Integer, Achievement> achievements = new HashMap<Integer, Achievement>();
+    private final Main plugin;
+    private final HashMap<Integer, Achievement> achievements = new HashMap<Integer, Achievement>();
     private int nextFreeId;
     
     public AchievementManager(Main aThis) {
