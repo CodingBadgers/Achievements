@@ -98,8 +98,8 @@ public class Main extends JavaPlugin {
                 try {
                     Connection con = api.getConnection();
                     Statement st = con.createStatement();
-                    if (!st.executeQuery("SHOW INDEXES FROM " + api.getDatabasePrefix() + tableName + " WHERE Key_name='no_duplicates'").next()) {
-                        st.execute("ALTER TABLE " + api.getDatabasePrefix() + tableName + " ADD UNIQUE INDEX 'no_duplicates' ('player_id', 'achievement_id');");
+                    if (!st.executeQuery("SHOW INDEXES FROM " + tableName + " WHERE Key_name='no_duplicates'").next()) {
+                        st.execute("ALTER TABLE " + tableName + " ADD UNIQUE INDEX 'no_duplicates' ('player_id', 'achievement_id');");
                     }
                     st.close();
                     con.close();
