@@ -155,7 +155,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onDisable(PluginDisableEvent event) {
-        if (event.getPlugin().equals(this.plugin)) {
+        if (event.getPlugin().equals(this.plugin) || "Stats".equals(event.getPlugin().getName())) {
             if (plugin.getPlayerManager() != null) {
                 for (String player : plugin.getPlayerManager().getPlayers()) {
                     plugin.getPlayerManager().savePlayer(player, true);
