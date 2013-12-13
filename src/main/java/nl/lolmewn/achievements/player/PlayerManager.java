@@ -81,12 +81,12 @@ public class PlayerManager {
                         st.addBatch();
                     }
                     st.executeBatch();
-//                    c.set(name + ".done", player.getCompletedAchievements());
-//                    try {
-//                        c.save(new File(plugin.getDataFolder(), "players.yml"));
-//                    } catch (IOException ex) {
-//                        Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
+                    c.set(name + ".done", player.getCompletedAchievements());
+                    try {
+                        c.save(new File(plugin.getDataFolder(), "players.yml"));
+                    } catch (IOException ex) {
+                        Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     if (remove) {
                         removePlayer(name);
                     }
