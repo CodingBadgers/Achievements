@@ -69,4 +69,23 @@ public class AchievementManager {
         return this.nextFreeId;
     }
 
+    public Achievement findAchievement(String q) {
+        try{
+            int i = Integer.parseInt(q);
+            return this.achievements.get(i);
+        }catch(NumberFormatException e){
+            for(Achievement ach : this.getAchievements()){
+                if(ach.getName().toLowerCase().startsWith(q.toLowerCase())){
+                    return ach;
+                }
+            }
+            for(Achievement ach : this.getAchievements()){
+                if(ach.getName().toLowerCase().contains(q.toLowerCase())){
+                    return ach;
+                }
+            }
+        }
+        return null;
+    }
+
 }
