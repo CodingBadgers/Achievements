@@ -76,22 +76,25 @@ public class PlayerManager {
                     con.setAutoCommit(false);
                     PreparedStatement st = con.prepareStatement("INSERT IGNORE INTO " + plugin.getAPI().getDatabasePrefix() + "achievements (player_id, achievement_id) VALUES (?, ?)");
                     st.setInt(1, id);
-                    for(int completed : player.getCompletedAchievements()){
+                    for (int completed : player.getCompletedAchievements()) {
                         st.setInt(2, completed);
                         st.addBatch();
                     }
                     st.executeBatch();
+                    con.commit();
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    if (remove) {
+                        removePlayer(name);
+                    }
                     c.set(name + ".done", player.getCompletedAchievements());
                     try {
                         c.save(new File(plugin.getDataFolder(), "players.yml"));
                     } catch (IOException ex) {
                         Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (remove) {
-                        removePlayer(name);
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
