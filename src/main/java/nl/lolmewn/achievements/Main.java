@@ -108,6 +108,8 @@ public class Main extends JavaPlugin {
                 }
             }
         }, 20L);
+        
+        this.getCommand("achievements").setExecutor(new CommandHandler(this));
     }
 
     public Settings getSettings() {
