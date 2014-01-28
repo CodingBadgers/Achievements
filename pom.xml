@@ -12,7 +12,7 @@
     <url>http://maven.apache.org</url>
     <ciManagement>
         <system>hudson</system>
-        <url>http://localhost:8080/job/Highscores/</url>
+        <url>http://localhost:8080/job/Achievements/</url>
     </ciManagement>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

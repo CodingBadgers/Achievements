@@ -2,6 +2,11 @@ package nl.lolmewn.achievements;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import nl.lolmewn.achievements.goal.Goal;
@@ -36,11 +41,16 @@ public class CommandHandler implements CommandExecutor {
                 AchievementPlayer ap = plugin.getPlayerManager().getPlayer(sender.getName());
                 sender.sendMessage("====Achievements====");
                 sender.sendMessage("Completed: " + ap.getCompletedAchievements().size() + "/" + plugin.getAchievementManager().getAchievements().size());
-                TreeMap<Double, Achievement> map = orderByPercentageCompleted(ap, plugin.getAchievementManager().getAchievements(), true);
+                System.out.println("Building treemap");
+                TreeMap<Achievement, Double> map = orderByPercentageCompleted(ap, plugin.getAchievementManager().getAchievements(), true);
+                Map<Achievement, Double> sortedMap = this.sortByValue(map);
+                for (Map.Entry<Achievement, Double> entry : map.entrySet()) {
+                    System.out.println("Key: " + entry.getKey().getName() + ". Value: " + entry.getValue());
+                }
                 int shown = 0;
-                for (Map.Entry<Double, Achievement> entry : map.entrySet()) {
-                    Double key = entry.getKey();
-                    Achievement value = entry.getValue();
+                for (Map.Entry<Achievement, Double> entry : sortedMap.entrySet()) {
+                    Double key = entry.getValue();
+                    Achievement value = entry.getKey();
                     if (key.doubleValue() == 100) {
                         continue;
                     }
@@ -98,14 +108,14 @@ public class CommandHandler implements CommandExecutor {
         return true;
     }
 
-    private TreeMap<Double, Achievement> orderByPercentageCompleted(AchievementPlayer ap, Collection<Achievement> achievements, boolean checkRequirements) {
-        TreeMap<Double, Achievement> map = new TreeMap<Double, Achievement>();
+    private TreeMap<Achievement, Double> orderByPercentageCompleted(AchievementPlayer ap, Collection<Achievement> achievements, boolean checkRequirements) {
+        TreeMap<Achievement, Double> map = new TreeMap<Achievement, Double>();
         StatsPlayer player = plugin.getAPI().getPlayer(ap.getPlayername());
         for (Achievement ach : achievements) {
             if (checkRequirements) {
                 //Not implemented yet lol, confused with my Quests plugin
             }
-            map.put(this.getPercentCompleted(player, ach), ach);
+            map.put(ach, this.getPercentCompleted(player, ach));
         }
         return map;
     }
@@ -114,22 +124,48 @@ public class CommandHandler implements CommandExecutor {
         double percent = -1;
         int amount = 0;
         for (Goal goal : ach.getGoals()) {
-            StatData globalData = player.getGlobalStatData(goal.getStat());
             if (percent == -1) {
                 //first time
-                percent = globalData.getValue(goal.getVariables()) / goal.getAmount() * 100;
+                percent = this.getGoalCompletion(player, goal);
                 amount++;
             } else {
-                percent = ((globalData.getValue(goal.getVariables()) / goal.getAmount() * 100) + percent * amount) / amount + 1;
+                percent = ((this.getGoalCompletion(player, goal)) + percent * amount) / (amount + 1);
                 amount++;
             }
         }
+        System.out.println("  " + ach.getName() + " " + percent + "%");
         return percent;
     }
 
     public double getGoalCompletion(StatsPlayer player, Goal goal) {
         StatData globalData = player.getGlobalStatData(goal.getStat());
-        return globalData.getValue(goal.getVariables()) / goal.getAmount() * 100;
+        double count = 0;
+        if (goal.isGlobal()) {
+            for (Object[] vars : globalData.getAllVariables()) {
+                count += globalData.getValue(vars);
+            }
+        } else {
+            count = globalData.getValue(goal.getVariables());
+        }
+        double value = (count / goal.getAmount()) * 100;
+        System.out.println("    " + goal.getStat().getName() + " " + value + "%");
+        return value;
+    }
+
+    public <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
+            @Override
+            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+        Map<K, V> result = new LinkedHashMap<K, V>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
     }
 
 }
