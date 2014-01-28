@@ -9,7 +9,9 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import nl.lolmewn.achievements.goal.Goal;
 import nl.lolmewn.achievements.player.AchievementPlayer;
 import nl.lolmewn.stats.player.StatData;
@@ -44,12 +46,12 @@ public class CommandHandler implements CommandExecutor {
                 sender.sendMessage("Completed: " + ap.getCompletedAchievements().size() + "/" + plugin.getAchievementManager().getAchievements().size());
                 System.out.println("Building treemap");
                 HashMap<Achievement, Double> map = orderByPercentageCompleted(ap, plugin.getAchievementManager().getAchievements(), true);
-                Map<Achievement, Double> sortedMap = this.sortByValue(map);
+                SortedSet<Map.Entry<Achievement, Double>> sortedSet = this.entriesSortedByValues(map);
                 for (Map.Entry<Achievement, Double> entry : map.entrySet()) {
                     System.out.println("Key: " + entry.getKey().getName() + ". Value: " + entry.getValue());
                 }
                 int shown = 0;
-                for (Map.Entry<Achievement, Double> entry : sortedMap.entrySet()) {
+                for (Map.Entry<Achievement, Double> entry : sortedSet) {
                     Double key = entry.getValue();
                     Achievement value = entry.getKey();
                     if (key.doubleValue() == 100) {
@@ -153,20 +155,23 @@ public class CommandHandler implements CommandExecutor {
         return value;
     }
 
-    public <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
-        List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
-            @Override
-            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-                return (o1.getValue()).compareTo(o2.getValue());
-            }
-        });
+    public <Achievement, Double extends Comparable<? super Double>> SortedSet<Map.Entry<Achievement, Double>> entriesSortedByValues(HashMap<Achievement, Double> originalMap) {
+        Map<Achievement, Double> map = (Map<Achievement, Double>) originalMap;
+        SortedSet<Map.Entry<Achievement, Double>> sortedEntries = new TreeSet<Map.Entry<Achievement, Double>>(
+                new Comparator<Map.Entry<Achievement, Double>>() {
 
-        Map<K, V> result = new LinkedHashMap<K, V>();
-        for (Map.Entry<K, V> entry : list) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-        return result;
+                    @Override
+                    public int compare(Map.Entry<Achievement, Double> e1, Map.Entry<Achievement, Double> e2) {
+                        int res = e2.getValue().compareTo(e1.getValue());
+                        if (e1.getKey().equals(e2.getKey())) {
+                            return res; // Code will now handle equality properly
+                        } else {
+                            return res != 0 ? res : 1; // While still adding all entries
+                        }
+                    }
+                });
+        sortedEntries.addAll(map.entrySet());
+        return sortedEntries;
     }
 
 }
