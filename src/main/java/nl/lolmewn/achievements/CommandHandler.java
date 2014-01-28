@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class CommandHandler implements CommandExecutor {
                 sender.sendMessage("====Achievements====");
                 sender.sendMessage("Completed: " + ap.getCompletedAchievements().size() + "/" + plugin.getAchievementManager().getAchievements().size());
                 System.out.println("Building treemap");
-                TreeMap<Achievement, Double> map = orderByPercentageCompleted(ap, plugin.getAchievementManager().getAchievements(), true);
+                HashMap<Achievement, Double> map = orderByPercentageCompleted(ap, plugin.getAchievementManager().getAchievements(), true);
                 Map<Achievement, Double> sortedMap = this.sortByValue(map);
                 for (Map.Entry<Achievement, Double> entry : map.entrySet()) {
                     System.out.println("Key: " + entry.getKey().getName() + ". Value: " + entry.getValue());
@@ -108,8 +109,8 @@ public class CommandHandler implements CommandExecutor {
         return true;
     }
 
-    private TreeMap<Achievement, Double> orderByPercentageCompleted(AchievementPlayer ap, Collection<Achievement> achievements, boolean checkRequirements) {
-        TreeMap<Achievement, Double> map = new TreeMap<Achievement, Double>();
+    private HashMap<Achievement, Double> orderByPercentageCompleted(AchievementPlayer ap, Collection<Achievement> achievements, boolean checkRequirements) {
+        HashMap<Achievement, Double> map = new HashMap<Achievement, Double>();
         StatsPlayer player = plugin.getAPI().getPlayer(ap.getPlayername());
         for (Achievement ach : achievements) {
             if (checkRequirements) {
