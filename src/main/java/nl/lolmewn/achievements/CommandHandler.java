@@ -42,14 +42,13 @@ public class CommandHandler implements CommandExecutor {
             }
             if (sender.hasPermission("achievements.view.self")) {
                 AchievementPlayer ap = plugin.getPlayerManager().getPlayer(sender.getName());
-                sender.sendMessage("====Achievements====");
-                sender.sendMessage("Completed: " + ap.getCompletedAchievements().size() + "/" + plugin.getAchievementManager().getAchievements().size());
-                System.out.println("Building treemap");
+                sender.sendMessage(ChatColor.GREEN + "====Achievements====");
+                sender.sendMessage(ChatColor.LIGHT_PURPLE + "Completed: "
+                        + ChatColor.GREEN + ap.getCompletedAchievements().size()
+                        + ChatColor.LIGHT_PURPLE + "/"
+                        + ChatColor.RED + plugin.getAchievementManager().getAchievements().size());
                 HashMap<Achievement, Double> map = orderByPercentageCompleted(ap, plugin.getAchievementManager().getAchievements(), true);
                 SortedSet<Map.Entry<Achievement, Double>> sortedSet = this.entriesSortedByValues(map);
-                for (Map.Entry<Achievement, Double> entry : map.entrySet()) {
-                    System.out.println("Key: " + entry.getKey().getName() + ". Value: " + entry.getValue());
-                }
                 int shown = 0;
                 for (Map.Entry<Achievement, Double> entry : sortedSet) {
                     Double key = entry.getValue();
@@ -58,7 +57,7 @@ public class CommandHandler implements CommandExecutor {
                         continue;
                     }
                     StringBuilder sb = new StringBuilder();
-                    sb.append(value.getName()).append(ChatColor.RESET).append(" [");
+                    sb.append(ChatColor.LIGHT_PURPLE).append(value.getName()).append(ChatColor.RESET).append(" [");
                     for (int i = 0; i < key.doubleValue() / 10; i++) {
                         sb.append(ChatColor.GREEN).append("|");
                     }
@@ -76,6 +75,49 @@ public class CommandHandler implements CommandExecutor {
         }
         if (args[0].equalsIgnoreCase("help")) {
 
+        }
+        if (args[0].equalsIgnoreCase("player")) {
+            if (args.length == 1) {
+                sender.sendMessage(ChatColor.RED + "Correct usage: /" + label + " player <playerName>");
+                return true;
+            }
+            String playerName = args[1];
+            Player player = plugin.getServer().getPlayer(playerName);
+            if (player == null) {
+                sender.sendMessage(ChatColor.RED + "Player could not be found! Is he offline?");
+                return true;
+            }
+            if (sender.hasPermission("achievements.view.others")) {
+                AchievementPlayer ap = plugin.getPlayerManager().getPlayer(player.getName());
+                sender.sendMessage(ChatColor.GREEN + "====Achievements====");
+                sender.sendMessage(ChatColor.LIGHT_PURPLE + "Completed: "
+                        + ChatColor.GREEN + ap.getCompletedAchievements().size()
+                        + ChatColor.LIGHT_PURPLE + "/"
+                        + ChatColor.RED + plugin.getAchievementManager().getAchievements().size());
+                HashMap<Achievement, Double> map = orderByPercentageCompleted(ap, plugin.getAchievementManager().getAchievements(), true);
+                SortedSet<Map.Entry<Achievement, Double>> sortedSet = this.entriesSortedByValues(map);
+                int shown = 0;
+                for (Map.Entry<Achievement, Double> entry : sortedSet) {
+                    Double key = entry.getValue();
+                    Achievement value = entry.getKey();
+                    if (key.doubleValue() == 100) {
+                        continue;
+                    }
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(ChatColor.LIGHT_PURPLE).append(value.getName()).append(ChatColor.RESET).append(" [");
+                    for (int i = 0; i < key.doubleValue() / 10; i++) {
+                        sb.append(ChatColor.GREEN).append("|");
+                    }
+                    for (int i = 10 - (int) key.doubleValue() / 10; i > 0; i--) {
+                        sb.append(ChatColor.RED).append("|");
+                    }
+                    sb.append(ChatColor.RESET).append("]");
+                    sender.sendMessage(sb.toString());
+                    if (++shown > 8) {
+                        break;
+                    }
+                }
+            }
         }
         Achievement ach = plugin.getAchievementManager().findAchievement(args[0]);
         if (ach == null) {
@@ -136,7 +178,6 @@ public class CommandHandler implements CommandExecutor {
                 amount++;
             }
         }
-        System.out.println("  " + ach.getName() + " " + percent + "%");
         return percent;
     }
 
@@ -151,7 +192,6 @@ public class CommandHandler implements CommandExecutor {
             count = globalData.getValue(goal.getVariables());
         }
         double value = (count / goal.getAmount()) * 100;
-        System.out.println("    " + goal.getStat().getName() + " " + value + "%");
         return value;
     }
 
