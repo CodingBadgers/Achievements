@@ -10,7 +10,6 @@ import nl.lolmewn.achievements.completion.CompletionType;
 import nl.lolmewn.achievements.goal.Goal;
 import nl.lolmewn.achievements.reward.Reward;
 import nl.lolmewn.achievements.reward.RewardType;
-import nl.lolmewn.stats.StatType;
 import nl.lolmewn.stats.api.Stat;
 import org.bukkit.configuration.ConfigurationSection;
 

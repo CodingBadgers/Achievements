@@ -14,6 +14,7 @@ import nl.lolmewn.stats.api.mysql.MySQLType;
 import nl.lolmewn.stats.api.mysql.StatsTable;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,7 +58,11 @@ public class Main extends JavaPlugin {
         playerManager = new PlayerManager(this);
         loadOnlinePlayers();
         aManager = new AchievementManager(this);
-        aManager.loadAchievements();
+        try {
+            aManager.loadAchievements();
+        } catch (InvalidConfigurationException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
         hasSpout = this.getServer().getPluginManager().getPlugin("Spout") != null;
         try {
@@ -138,29 +143,6 @@ public class Main extends JavaPlugin {
         for (Player p : this.getServer().getOnlinePlayers()) {
             this.playerManager.loadPlayer(p.getName());
         }
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String cm, String[] args) {
-        if (args.length == 0) {
-
-            return true;
-        }
-        if (args[0].equalsIgnoreCase("reload")) {
-            if (!sender.hasPermission("achievements.reload")) {
-                sender.sendMessage("You do not have permissions to do this!");
-                return true;
-            }
-            sender.sendMessage("Attempting to reload the configs...");
-            for (Player p : this.getServer().getOnlinePlayers()) {
-                this.getPlayerManager().savePlayer(p.getName(), false);
-            }
-            sender.sendMessage("All players saved.");
-            this.getAchievementManager().loadAchievements();
-            sender.sendMessage("All achievements loaded. Care though, if there were any errors in the file, you will only be able to see them in the console.");
-            return true;
-        }
-        return false;
     }
 
     public boolean hasSpout() {
