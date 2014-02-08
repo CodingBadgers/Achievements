@@ -8,4 +8,4 @@ commands:
   achievements:
     description: Main command for Achievements
     usage: Do /<command> to view your achievements!
-    aliases: [achiev, achievement]
+    aliases: [achiev, achievement, ach]
