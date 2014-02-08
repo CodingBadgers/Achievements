@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.lolmewn.achievements.goal.Goal;
 import nl.lolmewn.achievements.player.AchievementPlayer;
 import nl.lolmewn.stats.player.StatData;
@@ -20,6 +22,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 
 /**
@@ -117,6 +120,22 @@ public class CommandHandler implements CommandExecutor {
                         break;
                     }
                 }
+            }
+        }
+        if (args[0].equalsIgnoreCase("reload")) {
+            try {
+                sender.sendMessage("Reloading achievements...");
+                plugin.getAchievementManager().loadAchievements();
+                sender.sendMessage(ChatColor.GREEN + "All achievements have been succesfully reloaded");
+                sender.sendMessage("Saving and loading all players...");
+                for (String player : plugin.getPlayerManager().getPlayers()) {
+                    plugin.getPlayerManager().savePlayer(player, true);
+                    plugin.getPlayerManager().loadPlayer(player);
+                }
+                sender.sendMessage(ChatColor.GREEN + "All set and ready to roll!");
+            } catch (InvalidConfigurationException ex) {
+                Logger.getLogger(CommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                sender.sendMessage(ChatColor.RED + "There seems to be a problem with your config file, please check the logs");
             }
         }
         Achievement ach = plugin.getAchievementManager().findAchievement(args[0]);
