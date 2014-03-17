@@ -12,8 +12,6 @@ import nl.lolmewn.stats.api.StatsAPI;
 import nl.lolmewn.stats.api.mysql.MySQLAttribute;
 import nl.lolmewn.stats.api.mysql.MySQLType;
 import nl.lolmewn.stats.api.mysql.StatsTable;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -96,23 +94,6 @@ public class Main extends JavaPlugin {
         table.addColumn("id", MySQLType.INTEGER).addAttributes(MySQLAttribute.AUTO_INCREMENT, MySQLAttribute.NOT_NULL, MySQLAttribute.PRIMARY_KEY);
         table.addColumn("player_id", MySQLType.INTEGER).addAttributes(MySQLAttribute.NOT_NULL);
         table.addColumn("achievement_id", MySQLType.INTEGER).addAttributes(MySQLAttribute.NOT_NULL);
-        this.getServer().getScheduler().runTaskLaterAsynchronously(stats, new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    Connection con = api.getConnection();
-                    Statement st = con.createStatement();
-                    if (!st.executeQuery("SHOW INDEXES FROM " + tableName + " WHERE Key_name='no_duplicates'").next()) {
-                        st.execute("ALTER TABLE " + tableName + " ADD UNIQUE INDEX no_duplicates (player_id, achievement_id)");
-                    }
-                    st.close();
-                    con.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }, 20L);
         
         this.getCommand("achievements").setExecutor(new CommandHandler(this));
     }

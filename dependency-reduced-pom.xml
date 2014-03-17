@@ -4,7 +4,8 @@
   <groupId>nl.lolmewn.achievements</groupId>
   <artifactId>Achievements</artifactId>
   <name>Achievements</name>
-  <version>0.7-SNAPSHOT</version>
+  <version>0.9-SNAPSHOT</version>
+  <url>http://maven.apache.org</url>
   <ciManagement>
     <system>hudson</system>
     <url>http://localhost:8080/job/Achievements/</url>
@@ -35,12 +36,38 @@
           </execution>
         </executions>
         <configuration>
-          <minimizeJar>true</minimizeJar>
+          <minimizeJar>false</minimizeJar>
           <artifactSet>
             <includes>
               <include>org.mcstats.bukkit</include>
             </includes>
           </artifactSet>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>maven-replacer-plugin</artifactId>
+        <version>1.3.8</version>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <file>target/classes/plugin.yml</file>
+          <replacements>
+            <replacement>
+              <token>maven-version-number</token>
+              <value>${project.version}</value>
+            </replacement>
+            <replacement>
+              <token>jenkins-build-number</token>
+              <value>${BUILD_NUMBER}</value>
+            </replacement>
+          </replacements>
         </configuration>
       </plugin>
       <plugin>
@@ -75,29 +102,23 @@
   </build>
   <repositories>
     <repository>
+      <id>stats-repo</id>
+      <url>http://centrility.nl:8081/nexus/content/groups/public</url>
+    </repository>
+    <repository>
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/groups/public/</url>
+    </repository>
+    <repository>
+      <id>mcstats-repo</id>
+      <url>http://repo.mcstats.org/content/repositories/public/</url>
     </repository>
     <repository>
       <id>vault-repo</id>
       <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
     </repository>
-    <repository>
-      <id>Centrility snapshots</id>
-      <url>http://nexus.lolmewn.nl/content/groups/public/</url>
-    </repository>
-    <repository>
-      <id>McStats</id>
-      <url>http://repo.mcstats.org/content/repositories/public/</url>
-    </repository>
   </repositories>
   <dependencies>
-    <dependency>
-      <groupId>net.milkbowl.vault</groupId>
-      <artifactId>vault</artifactId>
-      <version>1.2.27</version>
-      <scope>compile</scope>
-    </dependency>
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
@@ -105,15 +126,21 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>craftbukkit</artifactId>
-      <version>1.6.2-R1.1-SNAPSHOT</version>
+      <groupId>net.milkbowl.vault</groupId>
+      <artifactId>Vault</artifactId>
+      <version>1.2.27</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>nl.lolmewn.stats</groupId>
       <artifactId>Stats</artifactId>
-      <version>1.36</version>
+      <version>1.38-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bukkit</groupId>
+      <artifactId>craftbukkit</artifactId>
+      <version>1.6.2-R1.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
