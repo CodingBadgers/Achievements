@@ -98,6 +98,8 @@ public class Main extends JavaPlugin {
         table.addColumn("achievement_id", MySQLType.INTEGER).addAttributes(MySQLAttribute.NOT_NULL);
         
         this.getCommand("achievements").setExecutor(new CommandHandler(this));
+        
+        this.scheduleDataSaver();
     }
 
     public Settings getSettings() {
@@ -130,5 +132,17 @@ public class Main extends JavaPlugin {
 
     public boolean hasSpout() {
         return this.hasSpout;
+    }
+
+    private void scheduleDataSaver() {
+        this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
+
+            @Override
+            public void run() {
+                for(String player : playerManager.getPlayers()){
+                    playerManager.savePlayer(player, false);
+                }
+            }
+        }, 6000, 6000);
     }
 }
