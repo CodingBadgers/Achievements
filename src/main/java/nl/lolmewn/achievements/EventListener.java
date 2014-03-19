@@ -123,10 +123,10 @@ public class EventListener implements Listener {
                 return true;
             }
         } else {
-            if (event.getNewValue() < g.getAmount()) {
-                return true;
-            }
             if (!Arrays.toString(event.getVars()).equalsIgnoreCase(Arrays.toString(g.getVariables()))) {
+                return false;
+            }
+            if (event.getNewValue() < g.getAmount()) {
                 return true;
             }
         }
