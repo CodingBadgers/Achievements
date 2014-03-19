@@ -44,7 +44,7 @@ public class PlayerManager {
         if (players.containsKey(name)) {
             return;
         }
-        AchievementPlayer player = new AchievementPlayer(plugin, name);
+        AchievementPlayer player = new AchievementPlayer(name);
         if (c.contains(name)) {
             plugin.debug("Config contains " + name);
             for (String stringId : c.getStringList(name + ".done")) {

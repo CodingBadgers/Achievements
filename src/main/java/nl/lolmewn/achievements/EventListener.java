@@ -11,6 +11,7 @@ import nl.lolmewn.achievements.goal.Goal;
 import nl.lolmewn.achievements.player.AchievementPlayer;
 import nl.lolmewn.achievements.reward.Reward;
 import nl.lolmewn.stats.api.StatUpdateEvent;
+import nl.lolmewn.stats.player.StatData;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -44,92 +45,10 @@ public class EventListener implements Listener {
             if (aPlayer.hasCompletedAchievement(ach.getId())) {
                 continue;
             }
-            boolean cont = false;
-            for (Goal g : ach.getGoals()) {
-                boolean breaking = false;
-                switch (g.getType()) {
-                    case STATS:
-                        if (handleStatsGoal(event, ach, g, aPlayer)) {
-                            cont = true;
-                            breaking = true;
-                        }
-                        break;
-                }
-                if (!event.getStat().equals(g.getStat())) {
-                    cont = true;
-                    break;
-                }
-                if (g.isGlobal()) {
-                    int totalValue = 0;
-                    for (Object[] vars : event.getStatData().getAllVariables()) {
-                        totalValue += event.getStatData().getValue(vars);
-                    }
-                    totalValue += event.getUpdateValue();
-                    if (g.getAmount() > totalValue) {
-                        cont = true;
-                        break;
-                    }
-                } else {
-                    if (event.getNewValue() < g.getAmount()) {
-                        cont = true;
-                        break;
-                    }
-                    if (!Arrays.toString(event.getVars()).equalsIgnoreCase(Arrays.toString(g.getVariables()))) {
-                        cont = true;
-                        break;
-                    }
-                }
-            }
-            if (cont) {
+            if (!achievementGet(event, ach)) {
                 continue;
             }
-            aPlayer.markAsCompleted(ach.getId());
-            AchievementGetEvent ae = new AchievementGetEvent(ach, aPlayer);
-            plugin.getServer().getPluginManager().callEvent(ae);
-            boolean invFullMessage = false;
-            for (Reward reward : ach.getRewards()) {
-                switch (reward.getRewardType()) {
-                    case COMMAND:
-                        if(player != null) player.performCommand(reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
-                        break;
-                    case CONSOLE_COMMAND:
-                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
-                        break;
-                    case ITEM:
-                        if(player == null){
-                            break;
-                        }
-                        String itemString = reward.getStringValue();
-                        String item = itemString.split(",")[0];
-                        int amount = Integer.parseInt(itemString.split(",")[1]);
-                        ItemStack stack;
-                        if (item.contains(".")) {
-                            stack = new ItemStack(Material.getMaterial(Integer.parseInt(item.split("\\.")[0])), amount, Short.parseShort(item.split("\\.")[1]));
-                        } else {
-                            stack = new ItemStack(Material.getMaterial(Integer.parseInt(item)), amount);
-                        }
-                        if (!player.getInventory().addItem(stack).isEmpty()) {
-                            player.getWorld().dropItem(player.getLocation(), stack);
-                            if (!invFullMessage) {
-                                player.sendMessage(ChatColor.GREEN + "Inventory full, item dropped on the ground.");
-                                invFullMessage = true;
-                            }
-                        }
-                        break;
-                    case MONEY:
-                        if (setupEconomy()) {
-                            economy.depositPlayer(aPlayer.getPlayername(), reward.getIntValue());
-                        }
-                }
-            }
-            for (Completion com : ach.getCompletions()) {
-                switch (com.getType()) {
-                    case MESSAGE:
-                        if(player == null) break;
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', com.getValue().replace("%name%", ach.getName())));
-                        break;
-                }
-            }
+            handleAchievementGet(player, aPlayer, ach);
         }
     }
 
@@ -145,7 +64,7 @@ public class EventListener implements Listener {
 
             @Override
             public void run() {
-                if(plugin.getServer().getPlayerExact(name) == null){
+                if (plugin.getServer().getPlayerExact(name) == null) {
                     plugin.getPlayerManager().removePlayer(name);
                 }
             }
@@ -178,9 +97,21 @@ public class EventListener implements Listener {
         return (economy != null);
     }
 
-    private boolean handleStatsGoal(StatUpdateEvent event, Achievement ach, Goal g, AchievementPlayer aPlayer) {
+    public boolean achievementGet(StatUpdateEvent event, Achievement ach) {
+        for (Goal g : ach.getGoals()) {
+            switch (g.getType()) {
+                case STATS:
+                    if (!meetsStatsGoal(event, g)) {
+                        return false;
+                    }
+            }
+        }
+        return true;
+    }
+
+    private boolean meetsStatsGoal(StatUpdateEvent event, Goal g) {
         if (!event.getStat().equals(g.getStat())) {
-            return true;
+            return hasCompletedStatsGoal(event, g);
         }
         if (g.isGlobal()) {
             int totalValue = 0;
@@ -200,5 +131,70 @@ public class EventListener implements Listener {
             }
         }
         return false;
+    }
+
+    public void handleAchievementGet(Player player, AchievementPlayer aPlayer, Achievement ach) {
+        aPlayer.markAsCompleted(ach.getId());
+        AchievementGetEvent ae = new AchievementGetEvent(ach, aPlayer);
+        plugin.getServer().getPluginManager().callEvent(ae);
+        boolean invFullMessage = false;
+        for (Reward reward : ach.getRewards()) {
+            switch (reward.getRewardType()) {
+                case COMMAND:
+                    if (player != null) {
+                        player.performCommand(reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
+                    }
+                    break;
+                case CONSOLE_COMMAND:
+                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
+                    break;
+                case ITEM:
+                    if (player == null) {
+                        break;
+                    }
+                    String itemString = reward.getStringValue();
+                    String item = itemString.split(",")[0];
+                    int amount = Integer.parseInt(itemString.split(",")[1]);
+                    ItemStack stack;
+                    if (item.contains(".")) {
+                        stack = new ItemStack(Material.getMaterial(Integer.parseInt(item.split("\\.")[0])), amount, Short.parseShort(item.split("\\.")[1]));
+                    } else {
+                        stack = new ItemStack(Material.getMaterial(Integer.parseInt(item)), amount);
+                    }
+                    if (!player.getInventory().addItem(stack).isEmpty()) {
+                        player.getWorld().dropItem(player.getLocation(), stack);
+                        if (!invFullMessage) {
+                            player.sendMessage(ChatColor.GREEN + "Inventory full, item dropped on the ground.");
+                            invFullMessage = true;
+                        }
+                    }
+                    break;
+                case MONEY:
+                    if (setupEconomy()) {
+                        economy.depositPlayer(aPlayer.getPlayername(), reward.getIntValue());
+                    }
+            }
+        }
+        for (Completion com : ach.getCompletions()) {
+            switch (com.getType()) {
+                case MESSAGE:
+                    if (player == null) {
+                        break;
+                    }
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', com.getValue().replace("%name%", ach.getName())));
+                    break;
+            }
+        }
+    }
+
+    private boolean hasCompletedStatsGoal(StatUpdateEvent event, Goal g) {
+        if(!this.plugin.getServer().getOfflinePlayer(event.getPlayer().getPlayername()).isOnline() && !g.isGlobal()){
+            return false; //he's not even online, how can he get stats
+        }
+        StatData statData = g.isGlobal() ? event.getPlayer().getGlobalStatData(g.getStat()) : event.getPlayer().getStatData(g.getStat(), this.plugin.getServer().getPlayerExact(event.getPlayer().getPlayername()).getWorld().getName(), false);
+        if(statData == null){
+            return false; //has no data to begin with, lol
+        }
+        return statData.getValue(g.getVariables()) >= g.getAmount();
     }
 }

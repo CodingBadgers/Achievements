@@ -6,7 +6,6 @@ package nl.lolmewn.achievements.player;
 
 import java.util.ArrayList;
 import java.util.List;
-import nl.lolmewn.achievements.Main;
 
 /**
  *
@@ -14,12 +13,10 @@ import nl.lolmewn.achievements.Main;
  */
 public class AchievementPlayer {    
     
-    private final Main plugin;
     private final String name;
     private final List<Integer> completedAchievements = new ArrayList<Integer>();
     
-    public AchievementPlayer(Main m, String name) {
-        this.plugin = m;
+    public AchievementPlayer(String name) {
         this.name = name;
     }
     
