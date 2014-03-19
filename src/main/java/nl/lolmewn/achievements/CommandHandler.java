@@ -2,15 +2,10 @@ package nl.lolmewn.achievements;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +25,7 @@ import org.bukkit.entity.Player;
  */
 public class CommandHandler implements CommandExecutor {
 
-    private Main plugin;
+    private final Main plugin;
 
     public CommandHandler(Main main) {
         this.plugin = main;
