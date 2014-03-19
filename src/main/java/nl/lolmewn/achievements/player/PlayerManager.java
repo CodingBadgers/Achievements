@@ -63,10 +63,10 @@ public class PlayerManager {
     public void savePlayer(final String name, final boolean remove) {
         final AchievementPlayer player = this.getPlayer(name);
         StatsPlayer sPlayer = plugin.getAPI().getPlayer(name);
-        final int id = sPlayer.getId();
         if (player == null) {
             return;
         }
+        final int id = sPlayer.getId();
         this.plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
