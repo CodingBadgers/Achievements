@@ -1,9 +1,6 @@
 package nl.lolmewn.achievements;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.lolmewn.achievements.Updater.UpdateType;

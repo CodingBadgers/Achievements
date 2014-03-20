@@ -4,8 +4,13 @@
 package nl.lolmewn.achievements;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 import nl.lolmewn.achievements.api.AchievementGetEvent;
+import nl.lolmewn.achievements.api.AchievementPlayerLoadedEvent;
 import nl.lolmewn.achievements.completion.Completion;
 import nl.lolmewn.achievements.goal.Goal;
 import nl.lolmewn.achievements.player.AchievementPlayer;
@@ -32,15 +37,29 @@ public class EventListener implements Listener {
 
     private final Main plugin;
     private Economy economy;
+    private final HashMap<String, HashSet<StatUpdateEvent>> playerLoadWait = new HashMap<String, HashSet<StatUpdateEvent>>();
 
     public EventListener(Main m) {
         plugin = m;
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onStatUpdate(StatUpdateEvent event) throws Exception {
+    public void onStatUpdate(final StatUpdateEvent event) throws Exception {
         Player player = plugin.getServer().getPlayerExact(event.getPlayer().getPlayername());
         AchievementPlayer aPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getPlayername());
+        if (aPlayer == null) {
+            //not loaded yet
+            if (this.playerLoadWait.containsKey(event.getPlayer().getPlayername())) {
+                this.playerLoadWait.get(event.getPlayer().getPlayername()).add(event);
+            } else {
+                this.playerLoadWait.put(event.getPlayer().getPlayername(), new HashSet<StatUpdateEvent>() {
+                    {
+                        this.add(event);
+                    }
+                });
+            }
+            return;
+        }
         for (Achievement ach : plugin.getAchievementManager().getAchievements()) {
             if (aPlayer.hasCompletedAchievement(ach.getId())) {
                 continue;
@@ -80,6 +99,20 @@ public class EventListener implements Listener {
                     plugin.getPlayerManager().savePlayer(player, true);
                 }
             }
+        }
+    }
+    
+    @EventHandler
+    public void onLoadComplete(AchievementPlayerLoadedEvent event){
+        if(this.playerLoadWait.containsKey(event.getPlayer().getPlayername())){
+            for(StatUpdateEvent ev : this.playerLoadWait.get(event.getPlayer().getPlayername())){
+                try {
+                    this.onStatUpdate(ev);
+                } catch (Exception ex) {
+                    Logger.getLogger(EventListener.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            this.playerLoadWait.remove(event.getPlayer().getPlayername());
         }
     }
 
@@ -188,11 +221,11 @@ public class EventListener implements Listener {
     }
 
     private boolean hasCompletedStatsGoal(StatUpdateEvent event, Goal g) {
-        if(!this.plugin.getServer().getOfflinePlayer(event.getPlayer().getPlayername()).isOnline() && !g.isGlobal()){
+        if (!this.plugin.getServer().getOfflinePlayer(event.getPlayer().getPlayername()).isOnline() && !g.isGlobal()) {
             return false; //he's not even online, how can he get stats
         }
         StatData statData = g.isGlobal() ? event.getPlayer().getGlobalStatData(g.getStat()) : event.getPlayer().getStatData(g.getStat(), this.plugin.getServer().getPlayerExact(event.getPlayer().getPlayername()).getWorld().getName(), false);
-        if(statData == null){
+        if (statData == null) {
             return false; //has no data to begin with, lol
         }
         return statData.getValue(g.getVariables()) >= g.getAmount();
