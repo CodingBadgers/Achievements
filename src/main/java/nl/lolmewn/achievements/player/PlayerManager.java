@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,12 +25,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @author Lolmewn <info@lolmewn.nl>
  */
 public class PlayerManager {
-    
+
     private final Main plugin;
     private final ConcurrentHashMap<String, AchievementPlayer> players = new ConcurrentHashMap<String, AchievementPlayer>();
     private final HashSet<String> beingLoaded = new HashSet<String>();
     private final YamlConfiguration c;
-    
+
     public PlayerManager(Main m) {
         this.plugin = m;
         File f = new File(plugin.getDataFolder(), "players.yml");
@@ -44,7 +43,7 @@ public class PlayerManager {
         }
         c = YamlConfiguration.loadConfiguration(f);
     }
-    
+
     public void loadPlayer(String name) {
         if (players.containsKey(name)) {
             return;
@@ -67,13 +66,13 @@ public class PlayerManager {
 //</editor-fold>
         int id = this.plugin.getAPI().getPlayerId(name);
         try {
-            PreparedStatement st = con.prepareStatement("SELECT * FROM " 
+            PreparedStatement st = con.prepareStatement("SELECT * FROM "
                     + this.plugin.getAPI().getDatabasePrefix() + "achievements"
                     + " WHERE player_id=?");
             st.setInt(1, id);
             ResultSet set = st.executeQuery();
-            if(set != null){
-                while(set.next()){
+            if (set != null) {
+                while (set.next()) {
                     int completed = set.getInt("achievement_id");
                     player.markAsCompleted(completed);
                 }
@@ -94,14 +93,14 @@ public class PlayerManager {
             this.plugin.getServer().getPluginManager().callEvent(event);
         }
     }
-    
+
     public AchievementPlayer getPlayer(String name) {
-        if(!this.players.containsKey(name)){
+        if (!this.players.containsKey(name)) {
             return null;
         }
         return this.players.get(name);
     }
-    
+
     public void savePlayer(final String name, final boolean remove) {
         final AchievementPlayer player = this.getPlayer(name);
         StatsPlayer sPlayer = plugin.getAPI().getPlayer(name);
@@ -111,14 +110,30 @@ public class PlayerManager {
         final int id = sPlayer.getId();
         try {
             Connection con = plugin.getAPI().getConnection();
-            con.setAutoCommit(false);
-            PreparedStatement st = con.prepareStatement("INSERT IGNORE INTO " + plugin.getAPI().getDatabasePrefix() + "achievements (player_id, achievement_id) VALUES (?, ?)");
+
+            PreparedStatement presentCheck = con.prepareStatement("SELECT * FROM " + plugin.getAPI().getDatabasePrefix() + "achievements WHERE player_id=? AND achievement_id=?");
+            PreparedStatement st = con.prepareStatement("INSERT INTO " + plugin.getAPI().getDatabasePrefix() + "achievements (player_id, achievement_id) VALUES (?, ?)");
+            presentCheck.setInt(1, id);
             st.setInt(1, id);
+
+            boolean anyInsert = false;
+
             for (int completed : player.getCompletedAchievements()) {
-                st.setInt(2, completed);
-                st.addBatch();
+                presentCheck.setInt(2, completed);
+                ResultSet set = presentCheck.executeQuery();
+                if (!set.next()) {
+                    st.setInt(2, completed);
+                    st.addBatch();
+                    anyInsert = true;
+                }
+                set.close();
             }
-            st.executeBatch();
+
+            if (anyInsert) {
+                st.executeBatch();
+            }
+            st.close();
+            presentCheck.close();
             con.commit();
             con.close();
         } catch (SQLException ex) {
@@ -135,15 +150,15 @@ public class PlayerManager {
             }
         }
     }
-    
+
     public Collection<AchievementPlayer> getAchievementPlayers() {
         return this.players.values();
     }
-    
+
     public Set<String> getPlayers() {
         return this.players.keySet();
     }
-    
+
     public void removePlayer(String name) {
         this.players.remove(name);
     }
