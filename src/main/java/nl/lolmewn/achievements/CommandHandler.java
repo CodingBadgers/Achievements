@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.lolmewn.achievements.goal.Goal;
@@ -123,7 +124,7 @@ public class CommandHandler implements CommandExecutor {
                 plugin.getAchievementManager().loadAchievements();
                 sender.sendMessage(ChatColor.GREEN + "All achievements have been succesfully reloaded");
                 sender.sendMessage("Saving and loading all players...");
-                for (String player : plugin.getPlayerManager().getPlayers()) {
+                for (UUID player : plugin.getPlayerManager().getPlayers()) {
                     plugin.getPlayerManager().savePlayer(player, true);
                     plugin.getPlayerManager().loadPlayer(player);
                 }

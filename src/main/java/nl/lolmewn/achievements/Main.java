@@ -1,6 +1,7 @@
 package nl.lolmewn.achievements;
 
 import java.io.IOException;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.lolmewn.achievements.Updater.UpdateType;
@@ -29,7 +30,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for(String player : playerManager.getPlayers()){
+        for(UUID player : playerManager.getPlayers()){
             this.playerManager.savePlayer(player, true);
         }
     }
@@ -123,7 +124,7 @@ public class Main extends JavaPlugin {
 
     public void loadOnlinePlayers() {
         for (Player p : this.getServer().getOnlinePlayers()) {
-            this.playerManager.loadPlayer(p.getName());
+            this.playerManager.loadPlayer(p.getUniqueId());
         }
     }
 
@@ -136,7 +137,7 @@ public class Main extends JavaPlugin {
 
             @Override
             public void run() {
-                for(String player : playerManager.getPlayers()){
+                for(UUID player : playerManager.getPlayers()){
                     playerManager.savePlayer(player, false);
                 }
             }

@@ -5,7 +5,6 @@
 package nl.lolmewn.achievements.goal;
 
 import java.util.Arrays;
-import nl.lolmewn.stats.StatType;
 import nl.lolmewn.stats.api.Stat;
 
 /**

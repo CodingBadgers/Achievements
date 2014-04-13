@@ -6,6 +6,7 @@ package nl.lolmewn.achievements;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
@@ -46,7 +47,7 @@ public class EventListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onStatUpdate(final StatUpdateEvent event) throws Exception {
         Player player = plugin.getServer().getPlayerExact(event.getPlayer().getPlayername());
-        AchievementPlayer aPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getPlayername());
+        AchievementPlayer aPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId());
         if (aPlayer == null) {
             //not loaded yet
             if (this.playerLoadWait.containsKey(event.getPlayer().getPlayername())) {
@@ -73,7 +74,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        plugin.getPlayerManager().loadPlayer(event.getPlayer().getName());
+        plugin.getPlayerManager().loadPlayer(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -88,14 +89,14 @@ public class EventListener implements Listener {
                 }
             }
         }, 20L);
-        plugin.getPlayerManager().savePlayer(event.getPlayer().getName(), false);
+        plugin.getPlayerManager().savePlayer(event.getPlayer().getUniqueId(), false);
     }
 
     @EventHandler
     public void onDisable(PluginDisableEvent event) {
         if (event.getPlugin().equals(this.plugin) || "Stats".equals(event.getPlugin().getName())) {
             if (plugin.getPlayerManager() != null) {
-                for (String player : plugin.getPlayerManager().getPlayers()) {
+                for (UUID player : plugin.getPlayerManager().getPlayers()) {
                     plugin.getPlayerManager().savePlayer(player, true);
                 }
             }
