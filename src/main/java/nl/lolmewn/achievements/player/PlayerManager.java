@@ -93,8 +93,8 @@ public class PlayerManager {
         }
         return this.players.get(player.getUniqueId());
     }
-    
-    public AchievementPlayer getPlayer(UUID uuid){
+
+    public AchievementPlayer getPlayer(UUID uuid) {
         return this.players.get(uuid);
     }
 
@@ -121,17 +121,20 @@ public class PlayerManager {
                 if (!set.next()) {
                     st.setInt(2, completed);
                     st.addBatch();
-                    anyInsert = true;
+                    if (!anyInsert) {
+                        con.setAutoCommit(false);
+                        anyInsert = true;
+                    }
                 }
                 set.close();
             }
 
             if (anyInsert) {
                 st.executeBatch();
+                con.commit();
             }
             st.close();
             presentCheck.close();
-            con.commit();
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(PlayerManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -160,8 +163,8 @@ public class PlayerManager {
         OfflinePlayer op = plugin.getServer().getOfflinePlayer(name);
         this.removePlayer(op.getUniqueId());
     }
-    
-    public void removePlayer(UUID uuid){
+
+    public void removePlayer(UUID uuid) {
         this.players.remove(uuid);
     }
 }
