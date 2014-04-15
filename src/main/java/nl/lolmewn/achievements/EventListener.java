@@ -20,6 +20,7 @@ import nl.lolmewn.stats.api.StatUpdateEvent;
 import nl.lolmewn.stats.player.StatData;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,7 +47,7 @@ public class EventListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onStatUpdate(final StatUpdateEvent event) throws Exception {
-        Player player = plugin.getServer().getPlayerExact(event.getPlayer().getPlayername());
+        OfflinePlayer player = plugin.getServer().getOfflinePlayer(event.getPlayer().getPlayername());
         AchievementPlayer aPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId());
         if (aPlayer == null) {
             //not loaded yet
@@ -167,7 +168,7 @@ public class EventListener implements Listener {
         return false;
     }
 
-    public void handleAchievementGet(Player player, AchievementPlayer aPlayer, Achievement ach) {
+    public void handleAchievementGet(OfflinePlayer player, AchievementPlayer aPlayer, Achievement ach) {
         aPlayer.markAsCompleted(ach.getId());
         AchievementGetEvent ae = new AchievementGetEvent(ach, aPlayer);
         plugin.getServer().getPluginManager().callEvent(ae);
@@ -175,15 +176,15 @@ public class EventListener implements Listener {
         for (Reward reward : ach.getRewards()) {
             switch (reward.getRewardType()) {
                 case COMMAND:
-                    if (player != null) {
-                        player.performCommand(reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
+                    if (player.isOnline()) {
+                        ((Player)player).performCommand(reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
                     }
                     break;
                 case CONSOLE_COMMAND:
                     plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), reward.getStringValue().replace("%player%", aPlayer.getPlayername()).replace("%name%", ach.getName()));
                     break;
                 case ITEM:
-                    if (player == null) {
+                    if (!player.isOnline()) {
                         break;
                     }
                     String itemString = reward.getStringValue();
@@ -195,10 +196,10 @@ public class EventListener implements Listener {
                     } else {
                         stack = new ItemStack(Material.getMaterial(Integer.parseInt(item)), amount);
                     }
-                    if (!player.getInventory().addItem(stack).isEmpty()) {
-                        player.getWorld().dropItem(player.getLocation(), stack);
+                    if (!((Player)player).getInventory().addItem(stack).isEmpty()) {
+                        ((Player)player).getWorld().dropItem(((Player)player).getLocation(), stack);
                         if (!invFullMessage) {
-                            player.sendMessage(ChatColor.GREEN + "Inventory full, item dropped on the ground.");
+                            ((Player)player).sendMessage(ChatColor.GREEN + "Inventory full, item dropped on the ground.");
                             invFullMessage = true;
                         }
                     }
@@ -212,10 +213,10 @@ public class EventListener implements Listener {
         for (Completion com : ach.getCompletions()) {
             switch (com.getType()) {
                 case MESSAGE:
-                    if (player == null) {
+                    if (!player.isOnline()) {
                         break;
                     }
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', com.getValue().replace("%name%", ach.getName())));
+                    ((Player)player).sendMessage(ChatColor.translateAlternateColorCodes('&', com.getValue().replace("%name%", ach.getName())));
                     break;
             }
         }
