@@ -13,6 +13,7 @@ import nl.lolmewn.stats.api.mysql.StatsTable;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
@@ -21,6 +22,7 @@ import org.mcstats.Metrics.Plotter;
 public class Main extends JavaPlugin {
 
     private StatsAPI api;
+    private AchievementsAPI achAPI;
     private Settings settings;
     private AchievementManager aManager;
     private PlayerManager playerManager;
@@ -98,6 +100,7 @@ public class Main extends JavaPlugin {
         this.getCommand("achievements").setExecutor(new CommandHandler(this));
         
         this.scheduleDataSaver();
+        this.registerAPI();
     }
 
     public Settings getSettings() {
@@ -142,5 +145,10 @@ public class Main extends JavaPlugin {
                 }
             }
         }, 6000, 6000);
+    }
+
+    private void registerAPI() {
+        this.achAPI = new AchievementsAPI(this);
+        this.getServer().getServicesManager().register(AchievementsAPI.class, this.achAPI, this, ServicePriority.Low);
     }
 }
