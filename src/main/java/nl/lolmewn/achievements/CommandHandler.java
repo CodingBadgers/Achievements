@@ -32,6 +32,64 @@ public class CommandHandler implements CommandExecutor {
         this.plugin = main;
     }
 
+	private void outputAchievmentsToSender(CommandSender sender, int page) {
+		
+		final int noofToShow = 8;
+						
+		AchievementPlayer ap = plugin.getPlayerManager().getPlayer(sender.getName());
+		int noofPages = (int)Math.ceil(plugin.getAchievementManager().getAchievements().size() / noofToShow) + 1;
+		
+		if (page < 1) page = 1;
+		if (page > noofPages) page = noofPages;
+		
+		sender.sendMessage(ChatColor.GREEN + "==== Achievements [Page " + page + "/" + noofPages + "] ====");
+		sender.sendMessage(ChatColor.LIGHT_PURPLE + "Completed: "
+				+ ChatColor.GREEN + ap.getCompletedAchievements().size()
+				+ ChatColor.LIGHT_PURPLE + "/"
+				+ ChatColor.RED + plugin.getAchievementManager().getAchievements().size());
+		
+		HashMap<Achievement, Double> map = orderByPercentageCompleted(ap, plugin.getAchievementManager().getAchievements(), true);
+		SortedSet<Map.Entry<Achievement, Double>> sortedSet = this.entriesSortedByValues(map);
+		int shown = 0;
+		
+		int skipAmount = (page - 1) * noofToShow;
+		
+		for (Map.Entry<Achievement, Double> entry : sortedSet) {
+			
+			skipAmount--;
+			if (skipAmount >= 0) {
+				continue;
+			}
+			
+			Double key = entry.getValue();
+			Achievement value = entry.getKey();
+
+			if (key > 100) {
+				key = 100.0;
+			}
+
+			String achievment = ChatColor.LIGHT_PURPLE + value.getName() + ChatColor.RESET + " [" + ChatColor.GREEN;
+
+			for (int i = 0; i < key / 10.0; i++) {
+				achievment += "|";
+			}
+
+			achievment += ChatColor.RED;
+			for (int i = 10 - (int)(key / 10.0); i > 0; i--) {
+				achievment += "|";
+			}
+
+			achievment += ChatColor.RESET + "]";
+
+			sender.sendMessage(achievment);
+
+			if (++shown > (noofToShow - 1)) {
+				break;
+			}
+		}
+		
+	}
+	
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
@@ -40,38 +98,17 @@ public class CommandHandler implements CommandExecutor {
                 return true;
             }
             if (sender.hasPermission("achievements.view.self")) {
-                AchievementPlayer ap = plugin.getPlayerManager().getPlayer(sender.getName());
-                sender.sendMessage(ChatColor.GREEN + "====Achievements====");
-                sender.sendMessage(ChatColor.LIGHT_PURPLE + "Completed: "
-                        + ChatColor.GREEN + ap.getCompletedAchievements().size()
-                        + ChatColor.LIGHT_PURPLE + "/"
-                        + ChatColor.RED + plugin.getAchievementManager().getAchievements().size());
-                HashMap<Achievement, Double> map = orderByPercentageCompleted(ap, plugin.getAchievementManager().getAchievements(), true);
-                SortedSet<Map.Entry<Achievement, Double>> sortedSet = this.entriesSortedByValues(map);
-                int shown = 0;
-                for (Map.Entry<Achievement, Double> entry : sortedSet) {
-                    Double key = entry.getValue();
-                    Achievement value = entry.getKey();
-                    if (key.doubleValue() == 100) {
-                        continue;
-                    }
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(ChatColor.LIGHT_PURPLE).append(value.getName()).append(ChatColor.RESET).append(" [");
-                    for (int i = 0; i < key.doubleValue() / 10; i++) {
-                        sb.append(ChatColor.GREEN).append("|");
-                    }
-                    for (int i = 10 - (int) key.doubleValue() / 10; i > 0; i--) {
-                        sb.append(ChatColor.RED).append("|");
-                    }
-                    sb.append(ChatColor.RESET).append("]");
-                    sender.sendMessage(sb.toString());
-                    if (++shown > 8) {
-                        break;
-                    }
-                }
+                outputAchievmentsToSender(sender, 1);
             }
             return true;
         }
+		
+		try {
+			int page = Integer.parseInt(args[0]);
+			outputAchievmentsToSender(sender, page);
+			return true;
+		} catch(Exception ex) {}
+		
         if (args[0].equalsIgnoreCase("help")) {
 
         }

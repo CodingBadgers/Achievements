@@ -18,6 +18,7 @@ import nl.lolmewn.achievements.player.AchievementPlayer;
 import nl.lolmewn.achievements.reward.Reward;
 import nl.lolmewn.stats.api.StatUpdateEvent;
 import nl.lolmewn.stats.player.StatData;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -145,6 +146,7 @@ public class EventListener implements Listener {
     }
 
     private boolean meetsStatsGoal(StatUpdateEvent event, Goal g) {
+		
         if (!event.getStat().equals(g.getStat())) {
             return hasCompletedStatsGoal(event, g);
         }
@@ -161,7 +163,7 @@ public class EventListener implements Listener {
             if (!Arrays.toString(event.getVars()).equalsIgnoreCase(Arrays.toString(g.getVariables()))) {
                 return false;
             }
-            if (event.getNewValue() < g.getAmount()) {
+            if (event.getNewValue() >= g.getAmount()) {
                 return true;
             }
         }
@@ -216,7 +218,7 @@ public class EventListener implements Listener {
                     if (!player.isOnline()) {
                         break;
                     }
-                    ((Player)player).sendMessage(ChatColor.translateAlternateColorCodes('&', com.getValue().replace("%name%", ach.getName())));
+                    Bukkit.broadcastMessage(ChatColor.GOLD + "[Achievements] " + ChatColor.translateAlternateColorCodes('&', com.getValue().replace("%name%", ach.getName()).replace("%playername%", player.getName())));
                     break;
             }
         }
